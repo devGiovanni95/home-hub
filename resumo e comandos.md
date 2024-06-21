@@ -239,4 +239,172 @@ Então, é isso que nós vamos fazer no nosso próximo vídeo. Vamos alterar a f
 No próximo vídeo, então, aguardamos você para registrar esse micro front-end de novo aqui e cadastrar as dependências dele para poder visualizá-lo em tela.
 
 
+## transcrição da aula 4
+Agora, com o nosso micro front-end do tipo aplicação criado, vamos fazer a importação dele. Vamos fazer com que ele seja visualizado e importado dentro do nosso orquestrador.
+
+No Visual Studio Code, na pasta "root", onde está o nosso orquestrador, vamos abrir o arquivo home-hub-root-config.ts. Esse arquivo é responsável pela importação e registro dos micro front-ends dentro do orquestrador.
+
+Entre as linhas 12 e 16, já temos até um exemplo para descomentar.
+
+// registerApplication({
+//   name: "@home-hub/navbar",
+//   app: () => System.import("@home-hub/navbar"),
+//   activeWhen: ["/"]
+// });
+COPIAR CÓDIGO
+Vamos retirar as barras de comentários do bloco acima e fazer o seguinte: esse registro da aplicação recebe um nome, que será o nome da aplicação que vamos importar. Esse nome deve ser exatamente o mesmo que configuramos na nossa aplicação quando a criamos. O app será o nome do projeto que criamos e o activeWhen será a rota em que ele estará ativo dentro do nosso orquestrador.
+
+Em vez de navbar vamos escrever hello-world na linha 13 e fazer o mesmo para o system.Import.
+
+registerApplication({
+  name: "@home-hub/hello-word",
+   app: () => System.import("@home-hub/hello-world"),
+   activeWhen: ["/"]
+ });
+COPIAR CÓDIGO
+Ao salvar, ele vai dar um erro, porque ainda não temos essa importação funcionando. Precisamos fazer o registro dele dentro do nosso index.ejs.
+
+No index.ejs vamos inserir um import para hello-world:
+
+  "imports": {
+    "@home-hub/root-config": "//localhost:9000/home-hub-root-config.js",
+    "@home-hub/hello-world": "//localhost:8500/home-hub-hello-world.js",
+  }
+COPIAR CÓDIGO
+Vamos voltar no nosso navegador, porque se não me engano ele tem mais algumas informações para nós. Ah sim, tem um pequeno problema aqui por enquanto, vamos voltar no nosso Registro Application e comentar isso aqui rapidamente. Só para pegar esse trecho aqui, que será importante, que são as configurações do React e do React-DOM, que caso utilizemos o micro front-end do tipo React, precisamos passar essas dependências no nosso import map, no arquivo de configuração do orquestrador.
+
+Vamos simplesmente copiar essas duas linhas, ir no nosso index.ejs no Visual Studio Code, na linha 34 o import map está carregando as dependências que vão utilizar no nosso orquestrador. Então aqui na linha 35 vamos colocar uma vírgula no final da linha e colar o trecho de código que copiamos da documentação. Ao salvar, ele já fez o carregamento desses dois novos módulos, ele acabou de passar no terminal essa informação, de que ele carregou esses dois novos módulos, que colocamos no nosso import map.
+
+Se voltarmos aqui, ele não vai aparecer nada, porque não colocamos nenhuma informação ainda, então vamos voltar no nosso Home Hub e descomentar essa parte aqui. Ao salvar, ele está dando um erro aqui, vamos ver... Ah, tem que passar o Lifecycles aqui também, copiando e colando o outro arquivo. Esse Lifecycles é uma tipagem, então como estamos utilizando TypeScript, temos que passar as configurações da forma que o TypeScript espera, senão ele vai dar erro no nosso navegador.
+
+Voltando no nosso navegador, no local roxo 9000, se descermos essa página até o final, vemos que ele carregou o nosso micro front-end React que criamos. Como sabemos disso? Exatamente o @home-hub/hello-world está montado. Se voltarmos no nosso Visual Studio Code, e abrir aqui o root.component.tsx, dentro da pasta hello world, ele está passando justamente essa informação.
+
+Para fechar com chave de ouro, temos que mostrar o nosso hello world, então, no nosso home hub root config, vamos comentar essa parte que ele está mostrando a documentação para nós, que é esse single SPA welcome, entre as linhas 3 e as linhas 8, vamos fazer esse comentário, salvar, agora voltando no nosso root.component, dentro do hello world, dentro da pasta hello world, vamos passar aqui hello world, e em vez de section, vamos passar como um h1, salvar, e se voltarmos no nosso navegador, finalmente temos o nosso hello world, agora utilizando micro front-end.
+
+Mas um detalhe, fechamos com chave de ouro aqui, mostramos o nosso hello world, então, estamos mais do que prontos para começar o desenvolvimento aqui do nosso projeto do home hub, colocando as dependências de estilização, e manipulando isso de uma forma que a arquitetura micro front-end se encaixe nesse projeto. Só que antes, aconteceu uma coisa muito engraçada, então, vamos descomentar essa parte da documentação, salvar e voltar no nosso navegador, e olha só que coisa engraçada, ele está renderizando ao mesmo tempo esses dois micro front-ends, porque querendo ou não, esse welcome aqui, ele é um micro front-end que existe, ele está disponível aqui nesse unpackage, que já discutimos previamente, então, aqui no nosso Visual Studio Code, conseguimos visualizar que é um micro front-end que existe, que está configurado e tudo mais, só que ele está exibindo os dois ao mesmo tempo, que é justamente o que queremos, quando estamos falando aqui de um projeto onde várias equipes vão estar trabalhando no mesmo código, é exatamente essa integração que esperamos, que ao mesmo tempo tenha código de um tipo e código de outro tipo.
+
+Nesse caso aqui, o hello world está sendo em React, a forma que esse welcome foi desenvolvido nós não sabemos, mas vamos supor que ele foi feito agnóstico, sem nenhum framework. Então, está renderizando aqui, para nós é o que interessa, que tenha esse compartilhamento de código e eles renderizem ao mesmo tempo em tela, tanto que se mudarmos aqui o nosso hello world, colocar aqui dois exclamações e voltar no nosso código, ele está renderizando ao mesmo tempo. É exatamente isso que queremos, tanto para o ambiente de desenvolvimento, quanto para o ambiente produtivo, que projetos rodem em paralelo e ao mesmo tempo as atualizações ocorram em paralelo.
+
+Então, vamos fazer o seguinte, na próxima aula começamos a implementar já a nossa dashboard do Home Hub e vamos ver também algumas questões aqui sobre esse roteamento do ActiveWay, que talvez seja interessante mudar algumas configurações e tudo mais para evitar código duplicado. Então, só para fechar a aula, ficar com o código igualzinho, vamos remover aqui essa parte do Welcome, então das linhas 3 a 8, estamos removendo ele, salvar e também só para dar uma limpada no nosso código, esse slint.rc, ele está reclamando do parser, por isso que alguns arquivos ele está mostrando como vermelhinho, que não estamos utilizando o slint do Babel aqui no projeto. Então, vamos retirar esse parser da nossa pasta root, salvar e fazer a mesma coisa na pasta hello world, ele também tem um slint.rc, vamos tirar o parser do Babel e salvar.
+
+Vamos salvar aqui que ele está reclamando, deixa ver aqui, quick fix, é problema de pre-read, então não é nada, não é nenhum problema nem nada, é só a configuração do meu pre-read que não está batendo com as configurações do slint.rc aqui, mas isso aqui não tem problema, só de tirar aqueles erros do importe e tudo mais para nós já está suficiente. Então, aguardamos você na nossa próxima aula para começarmos a implementação da dashboard e colocar algumas dependências bem interessantes aqui para estilizar o projeto. Então, aguardamos você.
+
+
+
+
+
+
+## para saber mais
+Imagine que você está construindo um grande quebra-cabeça, onde cada peça representa uma parte diferente da imagem final. No desenvolvimento de aplicações web, esse quebra-cabeça pode ser comparado a um projeto grande, e cada peça, a uma parte menor e independente desse projeto, conhecida como micro-frontend.
+
+Micro-frontends são, basicamente, pequenas partes de uma aplicação web que trabalham juntas para formar um sistema maior. Cada micro-frontend é responsável por uma funcionalidade ou seção específica da aplicação, e pode ser desenvolvido, testado e implantado de forma independente.
+
+Por que a Comunicação é Importante?
+Agora que temos várias peças independentes (micro-frontends), precisamos de uma forma de fazê-las trabalhar juntas, como as peças de um quebra-cabeça se encaixam para formar uma imagem completa. Isso é onde a comunicação entre micro-frontends se torna crucial.
+
+Métodos de Comunicação
+Existem várias maneiras de permitir que micro-frontends se comuniquem entre si. Vamos explorar três métodos principais: eventos, callbacks e o uso de um barramento de eventos.
+
+Eventos
+Uma forma comum de comunicação em aplicações web é através do uso de eventos. Um micro-frontend pode "escutar" por eventos específicos. Quando outro micro-frontend "emite" ou "dispara" esse evento, o primeiro pode reagir a ele.
+
+Exemplo:
+
+// Micro-frontend A emite um evento
+document.dispatchEvent(new CustomEvent('atualizarUsuario', { detail: { nome: 'João' } }));
+
+// Micro-frontend B escuta o evento
+document.addEventListener('atualizarUsuario', (e) => {
+  console.log(`Nome do usuário atualizado para: ${e.detail.nome}`);
+});
+COPIAR CÓDIGO
+Callbacks
+Callbacks são funções passadas como argumentos para outras funções. Elas são executadas após a conclusão de uma tarefa. Um micro-frontend pode fornecer uma função callback para outro, que a executa em um momento apropriado.
+
+Exemplo:
+
+// Micro-frontend A define uma função callback
+function mostrarAlerta(mensagem) {
+  alert(`Alerta do Micro-frontend A: ${mensagem}`);
+}
+
+// Micro-frontend B recebe a função callback e a executa
+function atualizarDados(callback) {
+  // Atualiza os dados aqui...
+  callback('Dados atualizados com sucesso!');
+}
+
+atualizarDados(mostrarAlerta);
+COPIAR CÓDIGO
+Barramento de Eventos
+Um barramento de eventos é uma forma mais avançada de gerenciar a comunicação entre micro-frontends. Ele funciona como um sistema centralizado onde os micro-frontends podem publicar (emitir) eventos ou se inscrever (escutar) para receber notificações de eventos específicos.
+
+Exemplo:
+
+// Criação de um simples barramento de eventos
+const barramentoDeEventos = {
+  listeners: {},
+  subscribe(eventType, listener) {
+    this.listeners[eventType] = this.listeners[eventType] || [];
+    this.listeners[eventType].push(listener);
+  },
+  publish(eventType, arg) {
+    if (this.listeners[eventType]) {
+      this.listeners[eventType].forEach(listener => listener(arg));
+    }
+  }
+};
+
+// Micro-frontend A se inscreve para ouvir o evento 'atualizar'
+barramentoDeEventos.subscribe('atualizar', (dados) => {
+  console.log(`Recebendo dados para atualizar: ${dados}`);
+});
+
+// Micro-frontend B publica o evento 'atualizar'
+barramentoDeEventos.publish('atualizar', 'Dados novos');
+COPIAR CÓDIGO
+Conclusão
+A comunicação entre micro-frontends é essencial para construir aplicações web complexas e escaláveis. Utilizando eventos, callbacks e um barramento de eventos, podemos garantir que diferentes partes da nossa aplicação possam trabalhar juntas de forma eficiente. Compreender esses métodos de comunicação é um passo importante para dominar o desenvolvimento de micro-frontends. Continue explorando e experimentando com esses conceitos para se tornar ainda mais proficiente nessa área!
+
+
+## mao na massa
+Descrição do Problema:
+Você está construindo o "HomeHub", um painel de controle centralizado para gerenciar várias aplicações micro-frontend, como um painel de notícias, clima, e controle de dispositivos inteligentes em casa. Você decidiu usar o single-spa para orquestrar essas aplicações de forma eficiente. No entanto, você percebeu que o painel de navegação, um componente crucial para a navegação entre as diferentes aplicações, ainda não foi registrado no seu orquestrador. Sua tarefa é adicionar o registro da aplicação de navegação ao seu orquestrador single-spa, garantindo que ela esteja ativa e acessível em todas as páginas.
+
+Código:
+import { registerApplication, start } from "single-spa";
+
+registerApplication({
+  name: "@single-spa/welcome",
+  app: () =>
+    System.import(
+      "<https://unpkg.com/single-spa-welcome/dist/single-spa-welcome.js>"
+    ),
+  activeWhen: ["/"],
+});
+
+registerApplication({
+  name: "@home-hub/navbar",
+  app: () => System.import("@home-hub/navbar"),
+  activeWhen: ["/"]
+});
+
+start({
+  urlRerouteOnly: true,
+});
+COPIAR CÓDIGO
+VER OPINIÃO DO INSTRUTOR
+Opinião do instrutor
+
+Solução + Explicação:
+Para resolver este problema, você precisa registrar a aplicação de navegação (navbar) no orquestrador single-spa. Isso é feito utilizando a função registerApplication, onde você especifica o nome da aplicação (@home-hub/navbar), a função para carregar a aplicação (app: () => System.import("@home-hub/navbar")), e as condições sob as quais a aplicação deve estar ativa (activeWhen: ["/"]). Isso garante que a barra de navegação esteja disponível em todas as páginas do "HomeHub". O método start com a opção urlRerouteOnly: true é utilizado para iniciar o single-spa, garantindo que ele só manipule as rotas que mudam, otimizando o desempenho.
+
+
+
+##
+##
+##
+##
+##
+##
 # 3. 
