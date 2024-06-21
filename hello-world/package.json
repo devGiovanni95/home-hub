@@ -2,7 +2,7 @@
   "name": "@home-hub/hello-world",
   "scripts": {
     "start": "webpack serve",
-    "start:standalone": "webpack serve --env standalone",
+    "start:standalone": "webpack serve --port 9001 --env standalone",
     "build": "concurrently npm:build:*",
     "build:webpack": "webpack --mode=production",
     "analyze": "webpack --mode=production --env analyze",
