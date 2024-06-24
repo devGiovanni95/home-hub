@@ -11,15 +11,23 @@ import { registerApplication, start, LifeCycles } from "single-spa";
 // });
 
 
+// registerApplication({
+//   name: "@home-hub/hello-world",
+//   app: () => System.import<LifeCycles>("@home-hub/hello-world"),
+//   //Definindo onde estara visivel
+//   // activeWhen: ["/hello-word", "/docs"]
+//   //definindo somente uma rota para ver esse servico
+//   activeWhen: (location) => location.pathname === '/hello-world'
+// });
+
 registerApplication({
-  name: "@home-hub/hello-world",
-  app: () => System.import<LifeCycles>("@home-hub/hello-world"),
+  name: "@home-hub/navbar",
+  app: () => System.import<LifeCycles>("@home-hub/navbar"),
   //Definindo onde estara visivel
   // activeWhen: ["/hello-word", "/docs"]
   //definindo somente uma rota para ver esse servico
-  activeWhen: (location) => location.pathname === '/hello-world'
+  activeWhen: (location) => location.pathname === '/'
 });
-
 
 start({
   urlRerouteOnly: true,

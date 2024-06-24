@@ -367,7 +367,7 @@ Conclusão
 A comunicação entre micro-frontends é essencial para construir aplicações web complexas e escaláveis. Utilizando eventos, callbacks e um barramento de eventos, podemos garantir que diferentes partes da nossa aplicação possam trabalhar juntas de forma eficiente. Compreender esses métodos de comunicação é um passo importante para dominar o desenvolvimento de micro-frontends. Continue explorando e experimentando com esses conceitos para se tornar ainda mais proficiente nessa área!
 
 
-## mao na massa
+## mao na massa 
 Descrição do Problema:
 Você está construindo o "HomeHub", um painel de controle centralizado para gerenciar várias aplicações micro-frontend, como um painel de notícias, clima, e controle de dispositivos inteligentes em casa. Você decidiu usar o single-spa para orquestrar essas aplicações de forma eficiente. No entanto, você percebeu que o painel de navegação, um componente crucial para a navegação entre as diferentes aplicações, ainda não foi registrado no seu orquestrador. Sua tarefa é adicionar o registro da aplicação de navegação ao seu orquestrador single-spa, garantindo que ela esteja ativa e acessível em todas as páginas.
 
@@ -400,10 +400,278 @@ Solução + Explicação:
 Para resolver este problema, você precisa registrar a aplicação de navegação (navbar) no orquestrador single-spa. Isso é feito utilizando a função registerApplication, onde você especifica o nome da aplicação (@home-hub/navbar), a função para carregar a aplicação (app: () => System.import("@home-hub/navbar")), e as condições sob as quais a aplicação deve estar ativa (activeWhen: ["/"]). Isso garante que a barra de navegação esteja disponível em todas as páginas do "HomeHub". O método start com a opção urlRerouteOnly: true é utilizado para iniciar o single-spa, garantindo que ele só manipule as rotas que mudam, otimizando o desempenho.
 
 
+# 3. Trabalhando com MFE's
 
-##
-##
-##
+## transcrição aula 2
+Agora, criaremos o micro front-end para a navbar do dashboard.
+
+Criando o micro front-end para Navbar
+No VS Code, abrimos uma nova aba do terminal. Para isso, na lateral inferior direita, clicamos no botão identificado pelo ícone de "+".
+
+Rodamos o comando npx create-single-spa e, como já fizemos esse comando algumas vezes, faremos esse processo um pouco mais rápido.
+
+npx create-single-spa
+COPIAR CÓDIGO
+O diretório para esse novo micro front-end será chamado de react-navbar. Após selecionamos a primeira opção, single-spa application / parcel.
+
+Queremos utilizar o React, então selecionamos essa opção, e depois selecionamos o npm como gerenciador de pacotes. Após, usaremos o TypeScript, então selecionamos a opção "Yes". Em seguida, passamos o nome da organização como home-hub e o nome do projeto react-navbar.
+
+Registrando a aplicação no orquestrador
+Enquanto a configuração inicial está sendo feita, adiantaremos algumas configurações. No arquivo home-hub-root-config.ts, no orquestrador, faremos o registro da aplicação.
+
+Para isso, duplicamos o código das linhas 3 e 7, onde está o hello world. Após, substituímos o hello-word por react-navbar e salvamos o arquivo.
+
+home-hub-root-config.ts
+
+//Código omitido
+
+registerApplication({
+    name: '@home-hub/react-navbar',
+    app: () => System.import<LifeCycles>('@home-hub/react-navbar'),
+    activeWhen: ['/'],
+});
+COPIAR CÓDIGO
+Configurando o import
+Enquanto o preview está formatando e salvando, abrimos o arquivo index.ejs. Duplicamos o trecho de código da linha 51 e colamos logo abaixo. Na linha acima, adicionamos uma vírgula, pois é um JSON e pode ocasionar algum problema de configuração.
+
+Na linha que duplicamos, mudamos de hello world por react-navbar, o nome do novo micro front-end. Após, mudamos a porta para 8501 para fazermos alguns testes. O código fica da seguinte forma:
+
+index.ejs
+
+<script type="systemjs-importmap">
+    {
+        "imports": {
+            "@home-hub/root-config": "//localhost:9000/home-hub-root-config.js",
+            "@home-hub/hello-world": "//localhost:8500/home-hub-hello-world.js",
+            "@home-hub/react-navbar": "//localhost:8501/home-hub-react-navbar.js"
+        }
+    }
+</script>
+COPIAR CÓDIGO
+Ajustando o arquivo .eslintrc
+Voltamos para o arquivo home-hub-root-config.ts. Manteremos dessa forma, pois queremos mostrar um detalhe interessante. No explorador, na lateral esquerda do VS Code, abrimos a pasta do react-navbar que acabamos de instalar o micro front-end.
+
+Abrimos o arquivo .eslintrc e apagamos as linhas de código "parser" e "plugin" para parar de conflitar com as configurações do sistema que configuramos. Ficando conforme abaixo.
+
+.eslintrc
+
+{
+    "extends": ["ts-react-important-stuff"]
+}
+COPIAR CÓDIGO
+Renderizando o componente Navbar
+Feito isso, acessamos src > root.componet.tsx. Em return, apagamos o trecho {promps.name} is mounted! e passamos Navbar para visualizarmos esse componente sendo renderizado na tela.
+
+root.componet.tsx
+
+export default function Root(props) {
+    return<section>Navbar</section>;
+}
+COPIAR CÓDIGO
+Se voltarmos ao navegador, notamos que ainda não está sendo exibido, pois não rodando o projeto que acabamos de criar. Sendo assim, no terminal que criamos, passamos o comando cd para irmos para dentro da pasta.
+
+cd
+COPIAR CÓDIGO
+Após, passamos npm start -- --port 8501.
+
+npm start -- --port 8501
+COPIAR CÓDIGO
+Após analisar, notamos que por enquanto não ocorreu nenhum erro. Foi pego as referências externas do react e do react-dom e gerou o código. Abrimos novamente o navegador e atualizamos a página. Feito isso, é exibido o novo micro front-end que usaremos para a navbar.
+
+Entendendo as rotas
+Antes de começarmos a instalar algumas dependências de estilização, há um detalhe muito interessante sobre a rota. Nesse momento, não estamos lidando com roteamento e autenticação. Esse não é o objetivo desse curso, é um tema que podemos nos aprofundar futuramente em outro curso sobre roteamento e autenticação.
+
+Porém, no navegador, se adicionarmos na URL /docs e pressionarmos "Enter", perceba que continua sendo exibido o "Hello world" e o "Navbar".
+
+Voltarmos então no arquivo home-hub-root-config.ts, que é onde fazemos a verificação de onde estará ativo o micro front-end e onde estará desativado.
+
+Configurando rotas específicas
+Por exemplo, no hello-world, se em activeWhen: ['/'] passarmos '/hello-world' e salvarmos, estaremos dizendo para ser exibido apenas nessa rota.
+
+//Código omitido
+
+registerApplication({
+    name: '@home-hub/hello-world',
+    app: () => System.import<LifeCycles>('@home-hub/hello-world'),
+    activeWhen: ['/hello-world'],
+});
+COPIAR CÓDIGO
+Se voltarmos no navegador e atualizarmos a página, passando o caminho "localhost:9000/docs" visualizamos apenas o "Navbar". O mesmo acontece se voltarmos para a raíz "localhost:9000".
+
+Porém, se acessarmos "localhost:9000/hello-world" repare que a mensagem "Hello World" e o "Navbar" aparecem. Porém, o interessante é que aparecem em ordem invertida.
+
+Ordem de registro das aplicações
+No arquivo home-hub-root-config.ts tem uma ordem em que essas aplicações estão sendo registradas. Nesse caso, a ordem não importa, pois a navbar está sendo renderizada em todas as rotas e o hello-world tem a condição de aparecer apenas nessa rota.
+
+Nesse caso, é utilizado o princípio de que o componente que está sendo renderizado em todas as rotas estará sempre no topo, enquanto os outros, que são condicionais, serão renderizados abaixo dele.
+
+Esse é um fator muito importante no momento de fazer o registro das aplicações e colocar as rotas onde estarão ativos. Perceba que isso é um array, então, conseguimos passar mais de uma rota para estar ativo.
+
+Podemos, por exemplo, adicionar vírgula e passar '/docs'. Conforme abaixo:
+
+//Código omitido
+
+registerApplication({
+    name: '@home-hub/hello-world',
+    app: () => System.import<LifeCycles>('@home-hub/hello-world'),
+    activeWhen: ['/hello-world', '/docs'],
+});
+COPIAR CÓDIGO
+Assim, o hello-world passa a ser exibido nessas duas rotas. Se acessarmos "localhost:9000/docs", ele aparece. Porém, repare que a ordem inverteu. Isso acontece, pois temos duas condições que a rota está exibindo o nosso componente de hello-world. Como ele tem mais de uma condição de exibição, ele volta para o topo da pilha de componentes e a Navbar vai para baixo.
+
+É importante sabermos disso no momento de fazer a configuração das rotas que as aplicações serão exibidas.
+
+Outro ponto importante é que no activeWhen, podemos entrar na documentação e explorar como ele está sendo utilizado. Conseguimos trocar a forma que ele está sendo exibido por um array e utilizar a função de location, (location) => location.pathname ===.
+
+Nessa função, conseguimos passar exatamente o caminho que será exibido. Nesse caso, queremos que seja exibido somente na hello-world. Podemos fazer o mesmo na Navbar, da seguinte forma:
+
+//Código omitido
+
+registerApplication({
+    name: '@home-hub/hello-world',
+    app: () => System.import<LifeCycles>('@home-hub/hello-world'),
+    activeWhen: (location) => location.pathname === '/hello-world',
+});
+
+registerApplication({
+    name: '@home-hub/react-navbar',
+    app: () => System.import<LifeCycles>('@home-hub/react-navbar'),
+    activeWhen: (location) => location.pathname === '/',
+});
+COPIAR CÓDIGO
+Após salvar o arquivo e acessarmos a rota "localhost:9000/docs", não visualizamos nada. Já se acessarmos a raiz, visualizamos somente a navbar e em "localhost:9000/hello-world" visualizamos apenas o "Hello World".
+
+Assim, conseguimos colocar um array de caminhos que será exibido nessas localizações dentro do navegador ou conseguimos fazer essas configurações mais específicas para ser exibida somente em um local.
+
+Isso será muito interessante quando trabalharmos com roteamento compartilhamento de informações. Lembrando que esse não é o foco do curso, mas é importante sabermos como configurar rotas em casos mais específicos.
+
+No vídeo seguinte lidaremos com as dependências para estilizar a navbar. Te esperamos lá!
+
+## Transcrição aula 3
+Faremos a estilização do projeto. Nosso foco é a arquitetura micro front-end, então, para facilitar, usaremos os componentes do Material UI. Se analisarmos o Figma, o projeto está utilizando esses componentes para facilitar a implementação e poupar tempo.
+
+Preparando o projeto e instalando as dependências
+Vamos instalar as dependências do Material UI no Micro front-end de navbar. Para isso, acessamos a documentação do Material UI e copiamos o trecho de código referente ao Default installation.
+
+Antes de prosseguirmos, precisamos parar de rodar o projeto navbar. Então, no terminal pressionamos "Ctrl + C". Depois, colamos o trecho de código npm install.
+
+npm install @mui/material @emotion/react @emotion/styled
+COPIAR CÓDIGO
+Enquanto a instalação ocorre, faremos algumas limpezas referentes ao Hello World no projeto. Já ilustramos as situações de navegação que queríamos para este momento, então não precisaremos dele mais.
+
+No arquivo home-hub-root-config.ts do orquestrador, apagamos o registro do Hello World da linha 3 até a 7 e salvamos.
+
+home-hub-root-config.ts
+
+import { LifeCycles, registerApplication, start } from 'single-spa';
+
+registerApplication({
+    name: '@home-hub/react-navbar',
+    app: () => System.import<LifeCycles>('@home-hub/react-navbar'),
+    activeWhen: (location) => location.pathname === '/',
+});
+
+start({
+    urlRerouteOnly: true,
+});
+COPIAR CÓDIGO
+Depois, no arquivo index.ejs, apagamos a linha 51 onde está fazendo a importação do hello-world. Aproveitamos também para trocar a porta que o react-navBar está rodando para 8500.
+
+//Código omitido
+
+<script type="systemjs-importmap">
+    {
+        "imports": {
+            "@home-hub/root-config": "//localhost:9000/home-hub-root-config.js",
+            "@home-hub/react-navbar": "//localhost:8500/home-hub-react-navbar.js"
+        }
+    }
+</script>
+
+//Código omitido
+COPIAR CÓDIGO
+Removendo componentes não utilizados
+Após, no explorer, procuramos pela pasta "hello-world", clicamos com o botão direito e depois em "Delete", já que não usaremos mais.
+
+Agora, temos o "root", que é o orquestrador dos micro front-end e o micro front-end* da navbar, onde fizemos a instalação das dependências do Material UI.
+
+Instalando dependências adicionais
+Feito isso, voltamos para a documentação do Material UI para instalar as outras dependências. Descemos a tela até a seção Roboto font e copiamos o trecho de código.
+
+No VS Code, faremos a instalação no micro front-end da navbar, então colamos e executamos.
+
+npm install @fontsource/roboto
+COPIAR CÓDIGO
+Novamente no navegador, copiamos o comando da seção Icons e colamos no terminal.
+
+npm install @mui/icons-material
+COPIAR CÓDIGO
+Configurações e conceitos do micro front-end
+É importante ressaltarmos alguns pontos na forma como o micro front-end trabalha. O hello-world era um projeto todo em React, que estava renderizando o "Hello World" na tela. Mas, ele tinha suas próprias dependências, gerenciamento de estado, seu próprio ciclo de vida. Era um projeto totalmente à parte da navbar.
+
+Agora, estamos instalando essas dependências do Material UI na navbar, só ela que terá essas dependências do Material UI. Se quisermos um novo projeto, por exemplo, em Angular, e quisermos utilizar o SASS, LESS, ou qualquer outra coisa dentro do Angular, temos liberdade de fazer isso sem nenhum problema.
+
+Será um projeto separado, com seu próprio guia de estilos, só que vão conversar entre esses projetos. Essa característica do micro front-end, de ter projetos separados com suas próprias dependências e funcionando juntos, é muito interessante.
+
+Iniciando o projeto
+As dependências que precisaremos para a estilização da navbar estão concluídas. Sendo assim, abrimos outra aba no terminal. Feito isso, passamos o comando cd .. para voltarmos uma pasta, para a raiz do projeto.
+
+cd
+COPIAR CÓDIGO
+Após, passamos cd root e executamos o npm start do root, na porta 9000.
+
+cd root
+COPIAR CÓDIGO
+npm start
+COPIAR CÓDIGO
+Nenhum erro foi encontrado. Após, no terminal que está rodando a navbar, passamos npm start, porém agora utilizando a porta 8500.
+
+npm start -- --port 8500
+COPIAR CÓDIGO
+Gerou os arquivos sem nenhum erro. Então, abrimos o navegador e atualizamos a rota "localhost:9000". Feito isso, a navbar está sendo exibida sem nenhum problema.
+
+Refatorando o projeto
+Agora, começaremos a implementação da navbar, utilizando os componentes do Material UI. No explorador, acessamos "react-navbar". Limparemos o que não usaremos mais. Apagamos o arquivo root- component.test.tsx e o jest.config .js.
+
+Dentro do "src", acessamos o arquivo root.component.tsx. Depois, clicamos nele com o botão direito e depois em "Rename". Renomeamos para App, seguindo a nomenclatura. Após, no campo de código, na primeira linha, mudamos de Root() para App().
+
+App.tsx
+
+export default function App() {
+    return <section>Navbar</section>;
+}
+COPIAR CÓDIGO
+Até refatorarmos todo o código com essa atualização, aparecerão alguns erros. Mas, acessamos o arquivo home-hub-react-navbar.tsx e, próximo à linha 4, mudamos o import Root para import App. Dentro de const lifecycles, próximo à linha 9, mudamos de rootComponent: Root para rootComponent: App.
+
+Aproveitamos também para apagar as linhas de código abaixo, referentes ao errorBoundary(), pois não faremos mais essa implementação no micro front-end.
+
+import App from './App';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import singleSpaReact from 'single-spa-react';
+
+const lifecycles = singleSpaReact({
+    React,
+    ReactDOM,
+    rootComponent: App,
+});
+
+export const { bootstrap, mount, unmount } = lifecycles;
+COPIAR CÓDIGO
+Salvamos o arquivo e voltamos ao navegador. Ao atualizar a página, repare que continua aparecendo a navbar.
+
+Próximos passos
+Antes de começarmos a implementação, navegaremos na documentação do Material UI. Na barra de menu, na lateral esquerda da tela, clicamos em "Componentes > App Bar".
+
+Esse será o componente que usaremos no topo do aplicativo. Na página em que somos direcionados, encontramos exemplos de código que podemos utilizar.
+
+No vídeo seguinte, utilizaremos esse componente do Material UI dentro da navbar. Até lá!
+
+
+## Instalando a biblioteca material design no projeto navbar
+- https://mui.com/material-ui/getting-started/installation/
+
+
 ##
 ##
 ##
