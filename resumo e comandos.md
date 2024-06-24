@@ -672,7 +672,278 @@ No vídeo seguinte, utilizaremos esse componente do Material UI dentro da navbar
 - https://mui.com/material-ui/getting-started/installation/
 
 
+## mao na massa 
+Descrição do Problema:
+Você está construindo o "HomeHub", um dashboard centralizado para gerenciar dispositivos inteligentes em casa. Você precisa adicionar um micro-frontend para controlar as luzes. Este micro-frontend deve ser uma nova seção na página, permitindo ao usuário ligar/desligar as luzes e ajustar a intensidade. Como desenvolvedor iniciante, seu desafio é integrar este micro-frontend ao "HomeHub", garantindo que ele se comunique corretamente com o restante da aplicação.
+
+Código para o Exercício:
+import React, { useState } from 'react';
+import { Box, Slider, Switch, Typography } from '@mui/material';
+
+function LightControl() {
+  const [light, setLight] = useState(false);
+  const [intensity, setIntensity] = useState(30);
+
+  const handleLightChange = (event) => {
+    setLight(event.target.checked);
+  };
+
+  const handleIntensityChange = (event, newValue) => {
+    setIntensity(newValue);
+  };
+
+  return (
+    <Box sx={{ margin: 2 }}>
+      <Typography variant="h6">Luzes</Typography>
+      <Switch checked={light} onChange={handleLightChange} />
+      <Typography>Intensidade</Typography>
+      <Slider value={intensity} onChange={handleIntensityChange} aria-labelledby="continuous-slider" />
+    </Box>
+  );
+}
+
+
+export default LightControl;
+
+
+--
+Solução + Explicação:
+O código acima representa um micro-frontend para controlar as luzes no "HomeHub". Ele utiliza componentes do Material-UI para criar uma interface de usuário interativa. O componente LightControl mantém o estado da luz (ligada/desligada) e sua intensidade. Utiliza-se um Switch para ligar/desligar as luzes e um Slider para ajustar a intensidade. A integração desse micro-frontend no "HomeHub" permite ao usuário controlar as luzes de sua casa diretamente do dashboard.
+
+Para integrar este micro-frontend ao "HomeHub", você deve importar e renderizar o componente LightControl na aplicação principal. Isso pode ser feito adicionando <LightControl /> no componente principal ou em qualquer outro componente que represente a página ou seção onde você deseja que o controle de luzes apareça.
+
+## Para saber mais: segurança em arquiteturas de micro-frontends
+Quando falamos sobre construir aplicações web modernas, uma das abordagens que vem ganhando bastante destaque é a arquitetura de micro-frontends. Essa abordagem permite que equipes diferentes trabalhem em partes distintas da interface do usuário (UI) de forma independente, como se cada parte fosse um pequeno aplicativo. Mas, como em qualquer arquitetura, garantir a segurança dos dados e das comunicações entre esses componentes separados é crucial. Vamos entender melhor como fazer isso.
+
+Segurança dos Dados
+A segurança dos dados em micro-frontends é fundamental. Cada micro-frontend pode precisar acessar informações sensíveis, como dados do usuário ou informações de pagamento. Para garantir que esses dados sejam tratados de forma segura, você pode adotar algumas práticas:
+
+1. Autenticação e Autorização
+Cada micro-frontend deve verificar se o usuário está autenticado (ou seja, se ele é quem diz ser) e autorizado (se tem permissão para acessar determinados dados ou realizar certas ações). Isso geralmente é feito através de tokens de autenticação, como JWT (JSON Web Tokens).
+
+Exemplo de código:
+
+// Verificar se o token de autenticação está presente e é válido
+if (tokenValido) {
+    // Permitir acesso ao micro-frontend ou a determinada funcionalidade
+} else {
+    // Redirecionar para a página de login ou mostrar mensagem de erro
+}
+COPIAR CÓDIGO
+2. Comunicação Segura
+Quando micro-frontends precisam se comunicar entre si ou com o backend, é importante que essa comunicação seja segura. Isso geralmente é feito usando HTTPS, que criptografa os dados enviados pela rede, impedindo que sejam interceptados ou alterados.
+
+3. CORS (Cross-Origin Resource Sharing)
+Quando você tem micro-frontends hospedados em diferentes domínios, você precisa configurar adequadamente as políticas de CORS no servidor. Isso garante que apenas os domínios autorizados possam fazer requisições ao seu serviço, protegendo contra ataques de cross-site.
+
+Segurança das Comunicações
+Além de proteger os dados, é importante garantir que as comunicações entre os micro-frontends sejam seguras. Isso inclui tanto a comunicação direta entre micro-frontends quanto a comunicação com o backend.
+
+1. Isolamento de Runtime
+Uma prática recomendada é isolar o ambiente de execução (runtime) de cada micro-frontend. Isso significa que, mesmo que um micro-frontend seja comprometido, ele não conseguirá afetar os outros. Frameworks e bibliotecas de micro-frontends geralmente oferecem meios para fazer esse isolamento.
+
+2. Validação de Entradas
+Sempre valide as entradas recebidas, seja de usuários ou de outros micro-frontends. Isso ajuda a prevenir ataques como injeção de SQL ou XSS (Cross-Site Scripting), onde entradas maliciosas são usadas para comprometer a aplicação.
+
+Exemplo de código:
+
+// Função para validar entradas
+function validarEntrada(entrada) {
+    // Verificar se a entrada é segura
+    // Por exemplo, remover tags HTML para prevenir XSS
+    return entradaSegura;
+}
+COPIAR CÓDIGO
+Conclusão
+Garantir a segurança em arquiteturas de micro-frontends envolve proteger tanto os dados quanto as comunicações entre os componentes. Isso inclui implementar autenticação e autorização robustas, garantir comunicações seguras, configurar políticas de CORS adequadamente, isolar os ambientes de execução e validar todas as entradas. Adotando essas práticas, você pode construir aplicações mais seguras e confiáveis.
+
+Lembrando que a segurança é um campo em constante evolução, então é importante estar sempre atualizado sobre as melhores práticas e novas vulnerabilidades que possam surgir.
+
+##
+# 4. 
+## Criando o menu lateral
+## transcricao aula 2
+Para deixarmos a nossa barra de navegação, Navbar, ainda mais completa e bem próxima do design que temos no Figma, precisamos implementar dois menus flutuantes.
+
+Inserindo menus flutuantes
+O primeiro que vamos implementar é um menu que surge quando clicamos no ícone do perfil. O segundo menu flutuante será um menu com um nome diferente, ele será do tipo Drawer (em portuês, "gaveta"). Portanto, iremos criar dois menus diferentes, mas que desempenham a mesma função, de abrir um menu dependendo do local que clicarmos.
+
+Iniciamos voltando ao navegador e acessando o Figma do projeto para entender como serão esses menus.
+
+Analisando no Figma
+O primeiro que vamos implementar, na visão do Figma, é este no canto superior direito.
+
+Interface de usuário de um aplicativo com menu contendo o nome 'Pedro Mello', o e-mail 'pedro.mello@gmail.com' e opções de menu para Configurações, Perfil e Sair, com ícones representativos ao lado de cada opção. Na parte superior, há um ícone de sino e outro de perfil da pessoa usuária que expande esse menu flutuante.
+Ao clicarmos no ícone da conta, representado por um boneco junto a um círculo branco, é aberto um menu flutuante. Esse menu exibe o nome da pessoa logada, o e-mail, e contém dois botões: um de configuração e outro de perfil.
+
+Após esses itens, há um divisor (divider) seguido por um botão para sair da conta. Este será o primeiro menu que implementaremos.
+
+Interface de usuário do aplicativo na tela Home Hub mostrando o menu de navegação com quatro opções: 'Visão geral', 'Dispositivos', 'Segurança' e 'Configurações', com ícones correspondentes ao lado de cada opção.
+Em seguida, implementamos o menu do lado esquerdo, que aparece ao clicarmos no ícone do Home Hub. Este ícone ainda não foi implementado em nossa aplicação, mas em breve o adicionaremos para melhorar a aparência da nossa barra de navegação.
+
+No entanto, vamos desviar um pouco do protocolo e do estilo definidos no Figma, pois pretendemos implementar um Drawer em vez do menu flutuante. Isso porque o Drawer, ao deixar o fundo da tela esmaecido e levemente desfocado, proporciona uma experiência visual mais agradável. Isso permitirá uma diferenciação na experiência da pessoa usuária dentro da aplicação.
+
+Se você preferir implementar o menu flutuante e personalizar o código ao seu gosto, não há problema. Basta seguir o que faremos nesta primeira etapa do código. A segunda etapa, que envolve a implementação do Drawer, é opcional, caso você queira replicar o que estamos fazendo.
+
+Já temos o código copiado do Material UI para o menu lateral do ícone da conta, em "App bar with a primary search field" (em português, "Barra de aplicativos com um campo de busca principal").
+
+Ao clicarmos no menu no ícone da conta no canto superior direito, será aberto um menu flutuante, onde aparece Profile (Perfil) e My Account (Minha Conta).
+
+Já temos esse código pronto. Voltamos ao VS Code e, dentro do arquivo App.tsx do micro front-end React Navbar, após a declaração function App(), pulamos duas linhas da linha 6 para a linha 7 para garantir uma boa indentação.
+
+Depois na linha 7, colamos o seguinte trecho de código que já temos copiado do Material UI.
+
+App.tsx
+
+// código omitido
+
+export default function App() {
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const isMenuOpen = Boolean(anchorEl);
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const renderMenu = (
+        <Menu
+            anchorEl={anchorEl}
+            anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+            keepMounted
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}
+            open={isMenuOpen}
+            onClose={handleMenuClose}
+        >
+            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+            <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+        </Menu>
+    );
+
+// código omitido
+COPIAR CÓDIGO
+Para explicar o que este código está fazendo: como o nosso menu será ancorado a um elemento no HTML, estamos criando um useState na linha 7. Esse useState definirá o elemento ancorado a partir de uma tag HTML. Além disso, faremos o import do useState, que ainda não está sendo feito, na linha 5, importando-o do React.
+
+App.tsx
+
+// código omitido
+
+import { useState } from 'react';
+
+// código omitido
+COPIAR CÓDIGO
+Na linha 9 (const isMenuOpen = Boolean(anchorEl)), estamos validando se o menu está aberto utilizando a função Boolean() do JavaScript. Como o anchorEl pode ser nulo ou conter um elemento HTML, essa validação é feita com Boolean, que retorna verdadeiro ou falso, indicando se existe um elemento ali ou se ele é nulo. Assim, conseguimos determinar se o menu está aberto ou fechado.
+
+Na linha 11 temos a função handleMenuClose() que vai fechar o menu quando ele estiver aberto. A função handleProfileMenuOpen() vai abrir este menu, então, quando clicarmos no ícone do perfil, ele vai abrir a partir desta função, e na linha 19 temos o render deste menu.
+
+Adicionaremos alguns imports do Material UI. Na linha 20, faremos o import do menu do Material UI, e na linha 34 faremos o import do menuItem. Esse import servirá tanto para fechar a tag na mesma linha quanto para o menuItem na linha abaixo, onde está escrito "My Account" (Minha Conta).
+
+Para realizar o import, você pode clicar no ícone de lâmpada à esquerda da linha sublinhada em vermelho. Isso se aplica às linhas que contêm "Menu" e "MenuItem".
+
+No MenuItem, podemos alterar de "Profile" para "Configurações" e de "My account" para "Perfil".
+
+// código omitido
+
+        <MenuItem onClick={handleMenuClose}>Configurações</MenuItem>
+        <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
+    </Menu>
+);
+
+// código omitido
+COPIAR CÓDIGO
+Acima e abaixo temos mais um menu, então copiamos a linha de Configurações para cima e também para baixo.
+
+// código omitido
+
+        <MenuItem onClick={handleMenuClose}>Configurações</MenuItem>
+        <MenuItem onClick={handleMenuClose}>Configurações</MenuItem>
+        <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
+        <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
+    </Menu>
+);
+
+// código omitido
+COPIAR CÓDIGO
+Na linha 34, adicionamos a opção "Usuário" para já tê-la disponível no menu, mas por enquanto não faremos nenhuma alteração. Abaixo dela, adicionamos o Divider do Material UI para definição. Após as linhas 36 e 37, colocaremos outro Divider e na linha 39, colocaremos a opção "Sair".
+
+// código omitido
+
+        <MenuItem onClick={handleMenuClose}>Usuário</MenuItem>
+        <Divider />
+        <MenuItem onClick={handleMenuClose}>Configurações</MenuItem>
+        <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
+        <Divider />
+        <MenuItem onClick={handleMenuClose}>Sair</MenuItem>
+    </Menu>
+);
+
+// código omitido
+COPIAR CÓDIGO
+No momento, os ícones estão apenas realizando uma função de onClick que fecha o menu ao serem clicados. Estamos focando na estilização neste momento, sem considerar ainda a funcionalidade específica de cada menu.
+
+Questões como perfil, configurações e outros detalhes funcionais não serão abordadas neste curso. Nosso objetivo é deixar o projeto mais próximo do design neste momento.
+
+O menu está configurado conforme o design do Figma, com o divider abaixo da opção "Usuário", outro divider abaixo das opções "Configurações" e "Perfil", e a opção "Sair".
+
+Ajustando o menuItem
+Descendo o código na linha 57, vamos adicionar mais um trecho de código referente ao menuItem no momento que ele abre o menu para nós. Para isso, voltamos à documentação do Material UI na seção "App bar with a primary search field". Nela, clicamos em "Show code" (em português, "mostrar código") e deixamos "TS" selecionado.
+
+Linha de código copiado da documentação:
+
+<MenuItem onClick={handleProfileMenuOpen}>
+COPIAR CÓDIGO
+Copiamos essa linha de código, voltamos ao arquivo onde estamos chamando o IconButton referente às informações de conta do usuário e colamos. Fechamos a tag na linha 68 e salvamos.
+
+// código omitido
+
+<MenuItem onClick={handleProfileMenuOpen}>
+    <IconButton
+        size='large'
+        edge='end'
+        aria-label='account of current user'
+        aria-haspopup='true'
+        onClick={() => {}}
+        color='inherit'
+    >
+        <AccountCircle />
+    </IconButton>
+</MenuItem>
+
+// código omitido
+COPIAR CÓDIGO
+Estou enfrentando um erro no arquivo devido ao eslint que estou utilizando, pois as configurações do projeto em TypeScript estão um pouco diferentes do que o eslint espera.
+
+Esse erro não afeta a compilação nem está relacionado a alguma regra específica; é apenas o eslint que está reclamando de uma tag que não estava esperando. Portanto, pode desconsiderar isso, não há nenhum problema real.
+
+Precisamos adicionar o renderMenu abaixo do nosso código, entre a linha 86 (AppBar) e a linha 87 (Box).
+
+// código omitido
+
+            </AppBar>
+            {renderMenu}
+        </Box>
+    );
+}
+COPIAR CÓDIGO
+Inserimos o renderMenu, salvamos o arquivo e depois verificamos no navegador se a função está funcionando corretamente.
+
+Testando o projeto
+localhost:9000
+COPIAR CÓDIGO
+Estamos testando o projeto, o micro front-end da NavBar. Quando clicamos no ícone de conta no canto superior direito, ele abre as opções de usuário, configurações, perfil e sair, com os dividers conforme configurado no Figma. Ainda há alguns ajustes a serem feitos, como adicionar informações como e-mail e ícones.
+
+Próximos Passos
+Porém, vamos encerrar por aqui e continuar a implementação do nosso Drawer no próximo vídeo. Espero você para criarmos um Drawer interessante para o nosso Home Hub!
+
 ##
 ##
 ##
-# 3. 
