@@ -762,6 +762,7 @@ Lembrando que a segurança é um campo em constante evolução, então é import
 ##
 # 4. 
 ## Criando o menu lateral
+
 ## transcricao aula 2
 Para deixarmos a nossa barra de navegação, Navbar, ainda mais completa e bem próxima do design que temos no Figma, precisamos implementar dois menus flutuantes.
 
@@ -944,6 +945,635 @@ Estamos testando o projeto, o micro front-end da NavBar. Quando clicamos no íco
 Próximos Passos
 Porém, vamos encerrar por aqui e continuar a implementação do nosso Drawer no próximo vídeo. Espero você para criarmos um Drawer interessante para o nosso Home Hub!
 
-##
-##
-##
+## Transcrição aula 3
+Vamos agora implementar o Drawer para a nossa NavBar.
+
+Para estarmos na mesma página, de uma aula para outra, adicionamos a logo do Home Hub dentro da pasta assets no nosso projeto. Também fizemos a seguinte troca no código:
+
+App
+
+// código omitido
+
+<img src={HomeHubLogo} style={{ width: '176px' }} />
+
+// código omitido
+COPIAR CÓDIGO
+Na linha 48, substituímos a tipografia e o texto "Home Hub" pela imagem da HomeHubLogo na nossa NavBar.
+
+Vamos exibir rapidamente no navegador como está funcionando. Voltando ao navegador, na parte superior esquerda temos o nosso micro front-end da NavBar, agora utilizando a logo conforme o nosso protótipo do Figma.
+
+Agora, vamos iniciar a implementação do Drawer.
+
+Analisando a documentação
+Primeiro, vamos na documentação do Material UI.
+
+Já temos a implementação do Drawer no componente. Ao clicarmos no botão "Open Drawer" em "Temporary drawer" (em português, "Drawer temporário"), será exibido o comportamento desse Drawer.
+
+No caso, será exibido um menu lateral esquerdo com as opções: "Inbox", "Starred", "Send email", "Drafts", "All mail", "Trash" e "Spam".
+
+Desejamos adicionar um menu flutuante no lado direito, que será aberto ao clicarmos na logo do Home Hub, conforme ilustrado nesse exemplo da documentação.
+
+Implementando o Drawer
+Vamos pegar os trechos de código necessários para importar no nosso projeto. Para isso, abaixo do botão "Open Drawer", clicamos em "Expand code" (em português, "Expandir código") e deixamos "TS" selecionado.
+
+Dentro disso, temos a seção UseState, responsável pela lógica de abrir e fechar o Drawer, e também a const, que abarca toda a lógica de estilização desse componente.
+
+Trecho copiado da documentação:
+
+  const [open, setOpen] = React.useState(false);
+
+  const toggleDrawer = (newOpen: boolean) => () => {
+    setOpen(newOpen);
+  };
+
+  const DrawerList = (
+    <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
+      <List>
+        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+          <ListItem key={text} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {['All mail', 'Trash', 'Spam'].map((text, index) => (
+          <ListItem key={text} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
+COPIAR CÓDIGO
+Copiamos esse trecho de código. Agora, vamos voltar ao nosso projeto no arquivo App.tsx do navbar. Na linha 10 após o isMenuOpen, vamos pular duas linhas para a indentação e colar o trecho de código.
+
+// código omitido
+
+export default function App() {
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const isMenuOpen = Boolean(anchorEl);
+    
+  const [open, setOpen] = React.useState(false);
+
+  const toggleDrawer = (newOpen: boolean) => () => {
+    setOpen(newOpen);
+  };
+
+  const DrawerList = (
+    <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
+      <List>
+        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+          <ListItem key={text} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {['All mail', 'Trash', 'Spam'].map((text, index) => (
+          <ListItem key={text} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
+
+// código omitido
+COPIAR CÓDIGO
+Agora, temos o trabalho de arrumar os imports e retirar os imports desnecessários.
+
+Vamos começar importando a lista na linha 20. Para isso, clicamos no ícone de lâmpada sobre o List que está sublinhado na cor vermelha e selecionamos "@mui/mater…".
+
+Também importamos o ListItem do Material.UI na linha 22, o ListItemButton, o ListItemIcon e o ListItemText. Os ícones InboxIcon e MailIcon, por enquanto, não vamos fazer a importação deles, porque precisamos pegar esse código no Material.UI.
+
+Por enquanto, é isso.
+
+Agora, podemos voltar ao Material UI e subir um pouco o trecho de código. Copiamos as linhas onde ele está pegando o ícone de Mail e de Inbox para colar no nosso projeto.
+
+Trecho copiado da documentação:
+
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
+COPIAR CÓDIGO
+Trecho de código no arquivo App.tsx:
+
+// código omitido
+
+import { useState } from 'react';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
+
+// código omitido
+COPIAR CÓDIGO
+Por enquanto, vamos fazer a troca pelos ícones corretos, de acordo com o Figma, mas só para termos a exibição inicial do nosso Drawer.
+
+Por enquanto, não ocorrerá nenhuma ação, pois ainda não estamos invocando a implementação do Drawer que criamos. Portanto, na linha 86, após a tag Toolbar, vamos incluir um MenuItem e, junto a ele, vamos atribuir a função onClick={}.
+
+Essa função onClick será responsável pelo toggleDrawer, que é a função responsável por abrir e fechar nosso Drawer, passando o valor booleano true.
+
+Vamos recortar essa tag de fechamento e colocá-la após a nossa imagem, que o intuito é que cliquemos na imagem e ele abra o Drawer.
+
+// código omitido
+
+<Toolbar>
+    <MenuItem onClick={toggleDrawer(true)}>
+        <img src={HomeHubLogo} style={{ width: '176px' }} />
+    </MenuItem>
+
+// código omitido
+COPIAR CÓDIGO
+Ainda não finalizamos a implementação, precisamos adicionar a lógica de renderização do Drawer. Isso deve ser feito na parte final do código, onde o RenderMenu está sendo chamado. Para isso, podemos consultar a documentação do Material UI, descer um pouco na seção de código e encontrar o Drawer, que possui as propriedades Open e OnClose.
+
+Trecho de código retirado da documentação:
+
+<Drawer open={open} onClose={toggleDrawer(false)}>
+    {DrawerList}
+</Drawer>
+COPIAR CÓDIGO
+Copiamos esse trecho de código e pulamos uma linha após o fechamento da tag AppBar (linha 120). Logo após, colamos o trecho de código.
+
+// código omitido
+
+</AppBar>
+<Drawer open={open} onClose={toggleDrawer(false)}>
+    {DrawerList}
+</Drawer>
+
+// código omitido
+COPIAR CÓDIGO
+Agora, fazer a importação do Drawer do Material UI e salvar o nosso código.
+
+Ao retornarmos à nossa navbar, podemos observar que ao passarmos o mouse sobre o HomeHub no canto superior esquerdo, o cursor muda para uma mão, indicando que é clicável. Além disso, o fundo da imagem fica ligeiramente mais escuro, criando a impressão de profundidade e destacando a capacidade de interação desse objeto.
+
+Ao clicarmos no HomeHub, o Drawer é ativado no lado esquerdo, exibindo o menu lateral com as opções mencionadas anteriormente. Se clicarmos fora do Drawer, ele se fecha automaticamente. Também podemos clicar no menu de usuário no canto superior direito para visualizar as informações, como já havíamos configurado anteriormente.
+
+Importante destacar que essas interações são independentes entre si. A diferença notável é que o Drawer escurece levemente o fundo, criando uma sensação de proximidade com o menu e proporcionando um efeito visual interessante, especialmente em interfaces de dashboard.
+
+Particularmente, gosto muito de utilizar Drawers, principalmente em dashboards, porque acho que fica um efeito bem diferenciado.
+
+Alterando as opções do menu
+Vamos proceder à troca dos ícones temporários que estamos usando e também alterar os Arrays de objetos na linha 38, que atualmente exibem nossa lista.
+
+Vamos voltar ao Figma para verificar quais são as opções que temos.
+
+Será "visão geral", "dispositivos", "segurança" e "configurações". Vamos alterar para visão geral na linha 38 no nosso código, dispositivos, segurança e configurações.
+
+App
+
+// código omitido
+
+<List>
+    {['Visão geral', 'Dispositivos', 'Segurança', 'Configurações'].map((text, index) => (
+
+// código omitido
+COPIAR CÓDIGO
+Salvamos essas alterações no código e voltamos ao navegador. Ao atualizar a página e clicar em "HomeHub" na parte superior esquerda, o menu é exibido com as informações fornecidas.
+
+Visão geral
+Dispositivos
+Segurança
+Configurações
+Todos os ícones estão incorretos, precisamos fazer essa alteração.
+
+Na verdade, vamos simplificar nossa abordagem. Em vez de mantermos uma lista em duas etapas e o divider nas linhas 47 a 57, vamos deletar essa lista inteira. Para isso, vamos remover as linhas 38 e 45 também.
+
+Trecho de código removido:
+
+<Divider />
+<List>
+    {['All mail', 'Trash', 'Spam'].map((text, index) => (
+        <ListItem key={text} disablePadding>
+            <ListItemButton>
+                <ListItemIcon>
+                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+            </ListItemButton>
+        </ListItem>
+    ))}
+</List>
+COPIAR CÓDIGO
+Linhas 38 e 45:
+
+{['Visão geral', 'Dispositivos', 'Segurança', 'Configurações'].map((text, index) => (
+
+))}
+COPIAR CÓDIGO
+Assim, ficamos com:
+
+// código omitido
+
+        <List>
+                <ListItem key={text} disablePadding>
+                    <ListItemButton>
+                        <ListItemIcon>
+                            {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                        </ListItemIcon>
+                        <ListItemText primary={text} />
+                    </ListItemButton>
+                </ListItem>
+        </List>
+    </Box>
+);
+
+// código omitido
+COPIAR CÓDIGO
+Também removemos a lógica da linha 40, onde ele está fazendo essa renderização dos ícones: ({index % 2 === 0 ? <InboxIcon /> : <MailIcon />}).
+
+Agora, dentro do ListItem, removemos as chaves (key={text}), dado que não temos mais uma lista e não estamos mais percorrendo um map.
+
+// código omitido
+
+        <List>
+                <ListItem disablePadding>
+                    <ListItemButton>
+                        <ListItemIcon>
+                        </ListItemIcon>
+                        <ListItemText primary={text} />
+                    </ListItemButton>
+                </ListItem>
+        </List>
+    </Box>
+);
+
+// código omitido
+COPIAR CÓDIGO
+Dentro do ListItemText na linha 41, digitamos entre aspas simples: 'Visão geral'.
+
+// código omitido
+
+        <List>
+                <ListItem disablePadding>
+                    <ListItemButton>
+                        <ListItemIcon></ListItemIcon>
+                        <ListItemText primary={'Visão geral'} />
+                    </ListItemButton>
+                </ListItem>
+        </List>
+    </Box>
+);
+
+// código omitido
+COPIAR CÓDIGO
+Em seguida, entre as linhas 43 e 38, vamos replicar o item existente mais três vezes, correspondendo aos quatro itens que compõem nossa lista de menu. Podemos contar esses itens como um, dois, três e quatro.
+
+Agora, escrevemos "Dispositivos", "Segurança" e "Configurações" em cada item.
+
+// código omitido
+
+        <List>
+                <ListItem disablePadding>
+                    <ListItemButton>
+                        <ListItemIcon></ListItemIcon>
+                        <ListItemText primary={'Visão geral'} />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                    <ListItemButton>
+                        <ListItemIcon></ListItemIcon>
+                        <ListItemText primary={'Dispositivos'} />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                    <ListItemButton>
+                        <ListItemIcon></ListItemIcon>
+                        <ListItemText primary={'Segurança'} />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                    <ListItemButton>
+                        <ListItemIcon></ListItemIcon>
+                        <ListItemText primary={'Configurações'} />
+                    </ListItemButton>
+                </ListItem>
+        </List>
+    </Box>
+);
+
+// código omitido
+COPIAR CÓDIGO
+Logo após, salvamos essas alterações no código e voltamos ao navegador para recarregá-lo.
+
+Temos no menu lateral as opções de visão geral, dispositivos, segurança e configurações. Vamos agora incluir os ícones conforme o design do Figma.
+
+Adicionando os ícones
+Teremos um ícone para a dashboard, chamado de "dashboard", um ícone para Wi-Fi, um cadeado representando o "lock", e o ícone de configurações, chamado "settings" que é a engrenagem.
+
+Dentro da documentação na aba lateral esquerda, dentro de onde encontramos os componentes e os mais adereços que temos dentro do material UI, temos uma seção chamada "Material Icons" e dentro dessa seção conseguimos fazer uma busca pelos ícones.
+
+Os ícones vão ser do tipo Filled, sendo esse primeiro que está marcado em "Filter the style" (em português, "Filtrar o estilo") do lado esquerdo. Esse tipo de ícone é o que já vem preenchido, então é esse que vamos utilizar aqui.
+
+Já temos os nomes dos ícones que registramos anteriormente. Isso nos permite agilizar um pouco mais o processo. O primeiro ícone da lista que iremos procurar no campo de busca é o "SpaceDashboard". Ao clicarmos nele, teremos acesso imediato às informações necessárias para copiar este ícone.
+
+Código exibido no ícone:
+
+import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
+COPIAR CÓDIGO
+Portanto, vamos prosseguir rapidamente com a tarefa de copiar e importar esses ícones para o nosso projeto. Não se esqueça de excluir os ícones de inbox e e-mail da linha 20 e 21, já que não serão utilizados.
+
+Imports removidos do arquivo App.tsx:
+
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
+COPIAR CÓDIGO
+Import adicionado ao arquivo App.tsx:
+
+// código omitido
+
+import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
+
+// código omitido
+COPIAR CÓDIGO
+O próximo é o ícone de Wi-Fi, seguido pelo ícone de bloqueio (lock) e, por último, o ícone de configurações (settings).
+
+// código omitido
+
+import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
+import WifiIcon from '@mui/icons-material/Wifi';
+import LockIcon from '@mui/icons-material/Lock';
+import SettingsIcon from '@mui/icons-material/Settings';
+
+// código omitido
+COPIAR CÓDIGO
+Vamos colocá-los dentro de ListItemIcon.
+
+Em seguida, temos o ícone de visão geral (SpaceDashboardIcon), o ícone de dispositivos de WifiIcon e de segurança o LockIcon. Por fim, na linha 60, o ícone de configurações (settings icon).
+
+// código omitido
+
+<List>
+    <ListItem disablePadding>
+        <ListItemButton>
+            <ListItemIcon>
+                <SpaceDashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Visão geral'} />
+        </ListItemButton>
+    </ListItem>
+    <ListItem disablePadding>
+        <ListItemButton>
+            <ListItemIcon>
+                <WifiIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Dispositivos'} />
+        </ListItemButton>
+    </ListItem>
+    <ListItem disablePadding>
+        <ListItemButton>
+            <ListItemIcon>
+                <LockIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Segurança'} />
+        </ListItemButton>
+    </ListItem>
+    <ListItem disablePadding>
+        <ListItemButton>
+            <ListItemIcon>
+                <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Configurações'} />
+        </ListItemButton>
+    </ListItem>
+</List>
+
+// código omitido
+COPIAR CÓDIGO
+Após salvarmos e retornarmos ao navegador onde nosso projeto está em execução, a página será recarregada, e agora veremos os ícones corretos de acordo com a nossa empresa.
+
+Desafio e Próximos Passos
+Antes da próxima aula, gostaríamos de propor um desafio para você. No menu à direita, replicamos o ícone das configurações (settings icon), o ícone do perfil e o ícone de saída (logout). O desafio consiste em implementar esses ícones de acordo com a implementação que realizamos no drawer e também no nosso menu de pessoa usuária.
+
+Esperamos você no nosso próximo vídeo para finalizarmos a personalização da nossa navbar e iniciarmos o micro front-end que vai ser responsável pela dashboard de conteúdos centrais que temos aqui no Figma com esses cards. Até mais!
+
+## Transcrição aula 4
+
+Agora é o momento de nos despedirmos da implementação da Navbar. Passamos alguns vídeos finalizando este processo e já temos o Drawer funcionando com os ícones. Se você completou o desafio, também temos o nosso menu lateral direito do perfil do usuário, com os ícones implementados.
+
+Contextualizando o problema
+Agora, voltando ao nosso código, precisamos garantir que a Navbar seja exibida em todas as rotas do projeto antes de iniciarmos o desenvolvimento do próximo micro front-end, que será o conteúdo da nossa dashboard.
+
+Fechamos o arquivo App.tsx, a imagem da nossa logo (home-hub.png), e também o arquivo principal do React Navbar (home-hub-react-navbar), onde já fizemos algumas alterações. Vamos manter o index.ejs aberto, apenas para confirmar algumas questões. Precisamos alterar no arquivo de rotas onde a nossa Navbar vai aparecer.
+
+Neste curso, não abordaremos profundamente questões de roteamento e import map, pois são tópicos mais avançados sobre o funcionamento dos micro front-ends. No entanto, discutiremos alguns conceitos básicos que já vêm sendo mencionados ao longo das aulas.
+
+<%-- código omitido --%>
+
+  <% if (isLocal) { %>
+  < script type="systemjs-importmap">
+    {
+      "imports": {
+        "@home-hub/root-config": "//localhost:9000/home-hub-root-config.js",
+        "@home-hub/react-navbar": "//localhost:8500/home-hub-react-navbar.js"
+      }
+    }
+
+<%-- código omitido --%>
+
+COPIAR CÓDIGO
+No arquivo index.ejs, na linha 51, definimos o caminho local para executar o micro front-end da Navbar. Ao criarmos outra dashboard, será necessário adicionar mais uma porta e um import adicional. Verificando que está tudo certo, não será preciso alterar mais nada referente à Navbar nesse arquivo.
+
+No arquivo home-hub-root-config.ts, localizado logo acima do index.ejs, encontramos um ponto crucial para a configuração da nossa aplicação.
+
+home-hub-root-config.ts
+
+import { LifeCycles, registerApplication, start } from 'single-spa';
+
+registerApplication({
+    name: '@home-hub/react-navbar',
+    app: () => System.import<LifeCycles>('@home-hub/react-navbar'),
+    activeWhen: (location) => location.pathname === '/',
+});
+
+start({
+    urlRerouteOnly: true,
+});
+COPIAR CÓDIGO
+A função que implementamos na linha 6, a Navbar, só estará ativa se estivermos na rota padrão da aplicação, ou seja, em localhost:9000/. Caso haja qualquer coisa após a barra, a Navbar não será exibida.
+
+Por exemplo, ao voltarmos ao navegador e digitarmos uma rota como localhost:9000/dashboard, a Navbar não será exibida. Precisamos configurar a aplicação para garantir que a Navbar apareça em qualquer rota que contenha uma barra. Em outras palavras, a Navbar deve estar presente em todas as rotas que seguem o formato localhost:9000/*.
+
+Voltamos ao código.
+
+Inserindo a NavBar em todas as rotas
+Podemos fazer isso de duas formas.
+
+Primeira abordagem
+A primeira abordagem envolve a função que já implementamos, onde passamos um parâmetro location na linha 6. Atualmente, comparamos o pathname com uma string específica. Em vez de verificar se são estritamente iguais, podemos modificar essa comparação para utilizar o método includes().
+
+Dentro desse includes(), que é uma função do JavaScript, passamos dentro de parênteses qualquer string que desejamos que tenha dentro do pathname. Por exemplo, se o pathname incluir barra, desejamos que a Navbar apareça.
+
+home-hub-root-config.ts
+
+import { LifeCycles, registerApplication, start } from 'single-spa';
+
+registerApplication({
+    name: '@home-hub/react-navbar',
+    app: () => System.import<LifeCycles>('@home-hub/react-navbar'),
+    activeWhen: (location) => location.pathname.includes('/'),
+});
+
+start({
+    urlRerouteOnly: true,
+});
+COPIAR CÓDIGO
+Ao salvarmos esse trecho de código e retornarmos ao navegador, veremos que a Navbar já está aparecendo na rota dashboard.
+
+localhost:9000/dashboard
+COPIAR CÓDIGO
+Além disso, se digitarmos qualquer outra rota, como login (localhost:9000/login), a Navbar também estará presente. Essa é uma das maneiras de garantir que a Navbar seja exibida em diversas rotas.
+
+Segunda abordagem
+A outra forma de configurar o projeto, que é a configuração padrão do orquestrador ao instalar, envolve especificar um activeWhen, seguido por dois pontos e então inserir um array de localizações.
+
+Por exemplo, ao fornecer o array com "barra" como um dos parâmetros, indicando que "barra" está no conteúdo do array, o sistema interpretará que sempre que a rota incluir "barra", a Navbar será ativada.
+
+import { LifeCycles, registerApplication, start } from 'single-spa';
+
+registerApplication({
+    name: '@home-hub/react-navbar',
+    app: () => System.import<LifeCycles>('@home-hub/react-navbar'),
+    //activeWhen: (location) => location.pathname.includes('/'),
+    activeWhen: ['/'],
+});
+
+start({
+    urlRerouteOnly: true,
+});
+COPIAR CÓDIGO
+Após voltarmos ao navegador e recarregarmos a página, podemos observar que o NavBar está sendo exibido com sucesso nas rotas /login, /dashboard e na rota principal /.
+
+Também podemos especificar para exibir o NavBar apenas em rotas específicas. Por exemplo, se quisermos que ele seja mostrado apenas nas rotas dashboard e login, podemos configurá-lo dessa forma.
+
+import { LifeCycles, registerApplication, start } from 'single-spa';
+
+registerApplication({
+    name: '@home-hub/react-navbar',
+    app: () => System.import<LifeCycles>('@home-hub/react-navbar'),
+    //activeWhen: (location) => location.pathname.includes('/'),
+    activeWhen: ['/dashboard', '/login'],
+});
+
+start({
+    urlRerouteOnly: true,
+});
+COPIAR CÓDIGO
+Após salvarmos as configurações e voltarmos ao navegador, notamos que na rota principal (representada apenas por "/"), o NavBar não é exibido. No entanto, se acessarmos a rota /login, ele aparece, e o mesmo ocorre na rota /dashboard.
+
+Agora é uma questão de preferência. Você, estudante, pode escolher entre utilizar a implementação atual da linha 7 (activeWhen: ['/']), que está funcionando, ou seguir a implementação da linha 6 que está comentada. A decisão é sua.
+
+import { LifeCycles, registerApplication, start } from 'single-spa';
+
+registerApplication({
+    name: '@home-hub/react-navbar',
+    app: () => System.import<LifeCycles>('@home-hub/react-navbar'),
+    activeWhen: (location) => location.pathname.includes('/'),
+});
+
+start({
+    urlRerouteOnly: true,
+});
+COPIAR CÓDIGO
+Optamos por manter a primeira implementação da linha 6, pois pode ser que precisemos fazer alterações no futuro. Este curso não focará muito em mexer com rotas e detalhes técnicos, mas já fornecemos uma explicação básica de como isso funcionaria.
+
+Agora vamos abrir um novo terminal para fazermos a instalação do micro front-end da dashboard.
+
+Instalando o micro front-end da dashboard
+Executamos o comando npx create-single-spa, é o mesmo processo que abordamos em vídeos anteriores.
+
+npx create-single-spa
+COPIAR CÓDIGO
+Obtemos como retorno:
+
+Directory for new project
+
+Nesse caso específico, vamos nomear o projeto como react-dashboard e defini-lo como do tipo application parcel. Portanto, em "Select type to generate" (em português, ""Selecione o tipo a ser gerado") selecionamos "single-spa application / parcel".
+
+Utilizaremos as tecnologias react, então, em "Which framework do you want to use?" (em português, "Qual framework você deseja usar?") optamos por "react".
+
+Em "Which package manager do you want to use?" (em português, "Qual gerenciador de pacotes você deseja usar?") optamos por "npm". A próxima pergunta é "Will this project use Typescript?" (traduzindo, "Este projeto utilizará TypeScript?"), digitamos "Yes".
+
+Logo após, é solicitado o organization name em que digitaremos "home-hub". O nome do projeto é react-dashboard.
+
+Directory for new project: react-dashboard
+Select type to generate: single-spa application / parcel
+Which framework do you want to use? react
+Which package manager do you want to use? npm
+Will this project use Typescript? Yes
+Organization name: home-hub
+Project name: react-dashboard
+Ele apresentou um problema relacionado ao Babel, mas acreditamos que não houve nenhum erro em nossa aplicação. Para verificar se tudo está funcionando corretamente, vamos fechar a aba do terminal.
+
+Vamos duplicar essa linha entre 3 e 4 dentro do root config. Passamos react-dashboard no código duplicado em vez de react-navbar.
+
+import { LifeCycles, registerApplication, start } from 'single-spa';
+
+registerApplication({
+    name: '@home-hub/react-navbar',
+    app: () => System.import<LifeCycles>('@home-hub/react-navbar'),
+    activeWhen: (location) => location.pathname.includes('/'),
+});
+
+registerApplication({
+    name: '@home-hub/react-dashboard',
+    app: () => System.import<LifeCycles>('@home-hub/react-dashboard'),
+    activeWhen: (location) => location.pathname.includes('/'),
+});
+index.ejs
+start({
+    urlRerouteOnly: true,
+});
+COPIAR CÓDIGO
+Por enquanto, manteremos o activeWhen conforme está aqui. Em seguida, duplicaremos a linha 51 no index.ejs e substituiremos "navbar" por "dashboard".
+
+index.ejs
+
+<%-- código omitido --%>
+
+< % if (isLocal) { % >
+< script type="systemjs-importmap">
+    {
+        "imports": {
+            "@home-hub/root-config": "//localhost:9000/home-hub-root-config.js",
+            "@home-hub/react-navbar": "//localhost:8500/home-hub-react-navbar.js"
+            "@home-hub/react-dashboard": "//localhost:8500/home-hub-react-dashboard.js"
+        }
+    }
+        
+< %-- código omitido --% >
+
+Conclusão e Próximos Passos
+Vamos verificar isso funcionando? Então, vamos combinar o seguinte: esperamos por você no próximo vídeo para rodarmos os dois micro front-end juntos e começarmos a desenvolver os cards e o conteúdo da dashboard.
+
+
+
+
+
+
+
+## Transcrição aula
+
+## Transcrição aula
+## Transcrição aula
+## Transcrição aula

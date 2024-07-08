@@ -26,7 +26,9 @@ registerApplication({
   //Definindo onde estara visivel
   // activeWhen: ["/hello-word", "/docs"]
   //definindo somente uma rota para ver esse servico
-  activeWhen: (location) => location.pathname === '/'
+  // activeWhen: (location) => location.pathname === '/'
+  // activeWhen: ["/"]
+  activeWhen: (location) => location.pathname.includes('/')
 });
 
 start({

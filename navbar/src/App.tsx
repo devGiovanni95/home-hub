@@ -7,12 +7,72 @@ import Badge from '@mui/material/Badge';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import React, { useState } from 'react';
-import { Divider, Menu, MenuItem } from '@mui/material';
+import { Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
+import HomeHubLogo from './assets/home-hub.png';
+import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
+import WifiIcon from '@mui/icons-material/Wifi';
+import LockIcon from '@mui/icons-material/Lock';
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
+import PersonIcon from '@mui/icons-material/Person';
 
 export default function App() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
-  
+
+
+  const [open, setOpen] = useState(false);
+
+  const toggleDrawer = (newOpen: boolean) => () => {
+    setOpen(newOpen);
+  };
+
+  {/* {['Visão geral', 'Dispositivos', 'Segurança', 'Configurações'].map((text, index) => ( */ }
+  const DrawerList = (
+    <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
+      <List>
+
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <SpaceDashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Visão geral'} />
+          </ListItemButton>
+        </ListItem>
+
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <WifiIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Dispositivos'} />
+          </ListItemButton>
+        </ListItem>
+
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <LockIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Segurança'} />
+          </ListItemButton>
+        </ListItem>
+
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Configurações'} />
+          </ListItemButton>
+        </ListItem>
+      </List>
+    </Box>
+  );
+
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
@@ -36,42 +96,68 @@ export default function App() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}> Usuário</MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+        Usuário
+      </MenuItem>
+
       <Divider />
-      <MenuItem onClick={handleMenuClose}> Configurações </MenuItem>
-      <MenuItem onClick={handleMenuClose}> Perfil </MenuItem>
+
+      <MenuItem onClick={handleMenuClose}>
+        <IconButton>
+          <SettingsIcon />
+        </IconButton>
+        Configurações
+      </MenuItem>
+
+      <MenuItem onClick={handleMenuClose}>
+        <IconButton>
+          <PersonIcon />
+        </IconButton>
+        Perfil
+      </MenuItem>
+
       <Divider />
-      <MenuItem onClick={handleMenuClose}> Sair </MenuItem>
+
+      <MenuItem onClick={handleMenuClose}>
+        <IconButton>
+          <LogoutIcon />
+        </IconButton>
+        Sair
+      </MenuItem>
+
     </Menu>
   );
 
-  return(    
+  return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{backgroundColor: '#9c27b0'}}>
+      <AppBar position="static" sx={{ backgroundColor: '#9c27b0' }}>
         <Toolbar>
+          <MenuItem onClick={toggleDrawer(true)}>
+            <img src={HomeHubLogo} style={{ width: '176px' }} />
+          </MenuItem>
           <Typography
             variant="h6"
             noWrap
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
-            HomeHub
+            {/* HomeHub */}
           </Typography>
 
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <MenuItem onClick={handleProfileMenuOpen}>
               <IconButton
-                  size="large"
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-haspopup="true"
-                  onClick={()=>{}}
-                  color="inherit"
-                  >
-                  <AccountCircle />
-                </IconButton>
-              </MenuItem>
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                aria-haspopup="true"
+                onClick={() => { }}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+            </MenuItem>
             <IconButton
               size="large"
               color="inherit"
@@ -87,13 +173,16 @@ export default function App() {
               size="large"
               aria-label="show more"
               aria-haspopup="true"
-              onClick={() => {}}
+              onClick={() => { }}
               color="inherit"
             >
             </IconButton>
           </Box>
         </Toolbar>
       </AppBar>
+      <Drawer open={open} onClose={toggleDrawer(false)}>
+        {DrawerList}
+      </Drawer>
       {/* chamando o menu que e uma constante */}
       {renderMenu}
     </Box>
