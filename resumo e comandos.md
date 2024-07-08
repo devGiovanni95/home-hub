@@ -1368,7 +1368,6 @@ Antes da próxima aula, gostaríamos de propor um desafio para você. No menu à
 Esperamos você no nosso próximo vídeo para finalizarmos a personalização da nossa navbar e iniciarmos o micro front-end que vai ser responsável pela dashboard de conteúdos centrais que temos aqui no Figma com esses cards. Até mais!
 
 ## Transcrição aula 4
-
 Agora é o momento de nos despedirmos da implementação da Navbar. Passamos alguns vídeos finalizando este processo e já temos o Drawer funcionando com os ícones. Se você completou o desafio, também temos o nosso menu lateral direito do perfil do usuário, com os ícones implementados.
 
 Contextualizando o problema
@@ -1572,7 +1571,9 @@ Vamos verificar isso funcionando? Então, vamos combinar o seguinte: esperamos p
 
 
 
-## Transcrição aula
+## Transcrição aula 5 - navbar interativa
+
+
 
 ## Transcrição aula
 ## Transcrição aula
