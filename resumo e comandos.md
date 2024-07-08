@@ -1572,9 +1572,1107 @@ Vamos verificar isso funcionando? Então, vamos combinar o seguinte: esperamos p
 
 
 ## Transcrição aula 5 - navbar interativa
+Você está desenvolvendo um "Home Hub", um painel de controle para gerenciar dispositivos inteligentes em casa. Você foi encarregado de criar a barra de navegação (navbar) que permitirá aos usuários navegar facilmente entre diferentes seções: Visão Geral, Dispositivos, Segurança e Configurações. Para tornar a interface amigável e moderna, você decidiu usar os componentes do Material UI. No entanto, você precisa garantir que a navbar seja não apenas funcional, mas também esteticamente agradável e consistente com o tema do "Home Hub". Sua tarefa é estilizar a navbar, adicionar ícones relevantes para cada seção e garantir que ela seja responsiva e acessível.
+
+Código para o Exercício:
+import React from 'react';
+import { AppBar, Toolbar, Typography, IconButton, Button, List, ListItem, ListItemIcon, ListItemText, Drawer } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import HomeIcon from '@mui/icons-material/Home';
+import DevicesIcon from '@mui/icons-material/DevicesOther';
+import SecurityIcon from '@mui/icons-material/Security';
+import SettingsIcon from '@mui/icons-material/Settings';
+
+function Navbar() {
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+
+  const toggleDrawer = (open) => (event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+    setDrawerOpen(open);
+  };
+
+  const menuItems = [
+    { text: 'Visão Geral', icon: <HomeIcon />, onClick: () => setDrawerOpen(false) },
+    { text: 'Dispositivos', icon: <DevicesIcon />, onClick: () => setDrawerOpen(false) },
+    { text: 'Segurança', icon: <SecurityIcon />, onClick: () => setDrawerOpen(false) },
+    { text: 'Configurações', icon: <SettingsIcon />, onClick: () => setDrawerOpen(false) },
+  ];
+
+  return (
+    <div>
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" style={{ flexGrow: 1 }}>
+            Home Hub
+          </Typography>
+          <Button color="inherit">Login</Button>
+        </Toolbar>
+      </AppBar>
+      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+        <List>
+          {menuItems.map((item, index) => (
+            <ListItem button key={item.text} onClick={item.onClick}>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItem>
+          ))}
+        </List>
+      </Drawer>
+    </div>
+  );
+}
+
+export default Navbar;
+
+----
+Opinião do instrutor
+
+Solução + Explicação:
+Este código cria uma barra de navegação (navbar) para o "Home Hub" usando Material UI. A navbar inclui um botão de menu que, quando clicado, abre um drawer lateral contendo uma lista de seções do aplicativo. Cada item da lista tem um ícone representativo e um texto. Os ícones usados são: HomeIcon para "Visão Geral", DevicesIcon para "Dispositivos", SecurityIcon para "Segurança" e SettingsIcon para "Configurações". O drawer pode ser fechado clicando fora dele ou selecionando um item. Este design melhora a usabilidade e a estética do painel de controle, tornando a navegação intuitiva e acessível.
+
+## aula 6 Para saber mais: avançado com material UI - Temas personalizados, estilização avançada e otimização de desempenho
+PRÓXIMA ATIVIDADE
+
+Material UI é uma biblioteca de componentes de interface de usuário para React que permite desenvolver aplicações web de forma rápida e com um design atraente, seguindo os princípios do Material Design da Google. Mas, além de oferecer componentes prontos para uso, o Material UI é extremamente flexível, permitindo personalizações avançadas que podem elevar o nível do seu projeto. Vamos explorar como você pode aproveitar ao máximo essa biblioteca, focando em temas personalizados, estilização avançada e otimização de desempenho.
+
+Temas Personalizados
+O que são e por que usar?
+Um tema no Material UI é um conjunto de configurações que definem a aparência dos seus componentes. Isso inclui cores, fontes, espaçamentos e outras propriedades visuais. Personalizar o tema permite que você aplique a identidade visual da sua marca ou projeto de forma consistente em todos os componentes.
+
+Como criar e aplicar um tema personalizado?
+Para criar um tema personalizado, você utiliza a função createTheme do Material UI e passa um objeto com as suas customizações. Depois, você usa o componente ThemeProvider para aplicar o tema aos seus componentes.
+
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { Button } from '@mui/material';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#007bff',
+    },
+  },
+});
+
+function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <Button color="primary">Meu Botão Personalizado</Button>
+    </ThemeProvider>
+  );
+}
+COPIAR CÓDIGO
+Estilização Avançada
+Por que ir além do básico?
+Embora o Material UI ofereça muitas opções de personalização através dos temas, às vezes você precisa de um controle mais fino sobre a estilização dos componentes. Isso pode incluir estilos condicionais, pseudo-classes, ou até estilizações que dependem do estado do componente.
+
+Como fazer estilização avançada?
+O Material UI oferece várias abordagens para estilização avançada, mas uma das mais poderosas é o uso do hook makeStyles.
+
+import { makeStyles } from '@mui/styles';
+import { Button } from '@mui/material';
+
+const useStyles = makeStyles({
+  root: {
+    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    border: 0,
+    borderRadius: 3,
+    boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+    color: 'white',
+    height: 48,
+    padding: '0 30px',
+  },
+});
+
+function StyledButton() {
+  const classes = useStyles();
+  return <Button className={classes.root}>Estilizado com makeStyles</Button>;
+}
+COPIAR CÓDIGO
+Otimização de Desempenho
+Por que é importante?
+A otimização de desempenho é crucial para manter sua aplicação rápida e responsiva. Componentes pesados ou mal otimizados podem levar a atrasos no carregamento ou interações lentas, prejudicando a experiência do usuário.
+
+Como otimizar o desempenho com Material UI?
+Use o carregamento sob demanda (lazy loading): Importe componentes do Material UI (e outros recursos) apenas quando forem necessários.
+Reutilize estilos: Evite a criação de estilos duplicados. Use o sistema de temas para definir estilos reutilizáveis.
+Evite renderizações desnecessárias: Utilize técnicas como React.memo, useMemo e useCallback para evitar renderizações desnecessárias de componentes.
+import React, { lazy, Suspense } from 'react';
+const MyLazyComponent = lazy(() => import('./MyLazyComponent'));
+
+function App() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <MyLazyComponent />
+    </Suspense>
+  );
+}
+COPIAR CÓDIGO
+Ao dominar temas personalizados, estilização avançada e otimização de desempenho no Material UI, você será capaz de criar aplicações React visualmente impressionantes e com alto desempenho. Experimente, explore e não tenha medo de personalizar cada detalhe para atender às necessidades do seu projeto.
+
+## aula 7 
+Você está prestes a finalizar seu projeto Home Hub, um dashboard elegante e funcional que integra diversos micro-frontends. Você já adicionou as dependências necessárias e utilizou os componentes do Material UI para dar vida ao seu projeto. Agora, está na fase de criar um componente personalizado dentro do seu micro-frontend que será a peça central da sua navbar, refletindo o tema Home Hub de maneira criativa e funcional.
+
+Considerando o conhecimento adquirido no curso e a necessidade de sintetizar informações para criar um componente que se destaque na navbar do seu projeto Home Hub, qual das seguintes opções melhor representa uma implementação eficaz que combina estilização com funcionalidade, utilizando Material UI?
+
+resposta 
+Utilizar <AppBar color="primary" position="static"> para garantir que a barra superior permaneça fixa e adicionar um <Toolbar> com um <IconButton> para o menu e um <Typography> para o título do Home Hub.
+
+
+Esta opção é eficaz porque combina a estilização fornecida pelo Material UI com a funcionalidade necessária para uma navbar. O uso de <AppBar> com position="static" garante que a barra permaneça visível, enquanto o <Toolbar> organiza os elementos internos, como o menu e o título, de forma intuitiva e acessível.
 
 
 
+
+## Transcrição aula desafio
+Nesta aula, foi adicionado um menu de perfil ao aplicativo React Navbar. O menu é acionado ao clicar no ícone de perfil e exibe opções como "Usuário", "Configurações", "Perfil" e "Sair". Além disso, foi adicionado um logo do HomeHub à barra de navegação.
+
+O menu lateral é aberto ao clicar em um ícone e exibe opções como "Visão geral", "Dispositivos", "Segurança", e "Configurações". Além disso, foram adicionados ícones e funcionalidades para "Perfil" e "Sair" no menu de usuário.
+
+Agora implemente dentro do código as instruções acima, conforme estudamos nos videos dessa aula.
+
+## Transcrição aula 8 
+É importante testar essa implementação em outros projetos e deixar a estilização personalizada de acordo com o seu gosto.
+
+Para a implementação, conforme feito nos videos, o passo a passo é:
+
+arquivo "react-navbar/src/App.tsx":
+
+Importe os componentes Divider, Menu, MenuItem e useState do pacote @mui/material.
+Adicione um estado anchorEl e um método setAnchorEl para controlar a abertura e fechamento do menu.
+Crie uma função handleMenuClose para fechar o menu.
+Crie uma função handleProfileMenuOpen para abrir o menu ao clicar no ícone de perfil.
+Renderize o menu com as opções "Usuário", "Configurações", "Perfil" e "Sair".
+Substitua o texto "HomeHub" por um logo chamado HomeHubLogo.
+Substitua o IconButton do perfil por um MenuItem que chama a função handleProfileMenuOpen.
+Adicione o menu renderizado após a barra de navegação.
+Importe os componentes Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, LockIcon, LogoutIcon, PersonIcon, SettingsIcon, SpaceDashboardIcon e WifiIcon do @mui/material.
+Crie um estado open e uma função toggleDrawer para controlar a abertura e fechamento do menu lateral.
+Defina o conteúdo do menu lateral dentro de um componente DrawerList.
+Adicione opções como "Visão geral", "Dispositivos", "Segurança" e "Configurações" no DrawerList.
+Atualize a função handleProfileMenuOpen para abrir o menu lateral ao clicar em um ícone.
+Substitua a imagem do logo dentro de um MenuItem pelo ícone de abertura do menu lateral.
+Adicione o componente Drawer com o DrawerList dentro do retorno da função App.
+
+# 5.
+
+## Transcrição aula 2 
+Transcrição
+Olá, estudante! Curioso(a) para ver tudo funcionando? Vamos lá, então.
+
+Definindo a porta para o react-dashboard
+Vamos executar os dois micro-frontends no nosso projeto. No index.js do nosso orquestrador, precisamos definir a porta para executar o dashboard. Ela deve ser diferente da porta usada pela nav bar ou pelo orquestrador para evitar erros no navegador. Vamos definir a porta 8501 para o react-dashboard na linha 52.
+
+<script type="systemjs-importmap">
+{
+    "imports": {
+        "@home-hub/root-config": "//localhost:9000/home-hub-root-config.js",
+        "@home-hub/react-navbar": "//localhost:8500/home-hub-react-navbar.js",
+        "@home-hub/react-dashboard": "//localhost:8501/home-hub-react-dashboard.js"
+    }
+}
+</script>
+COPIAR CÓDIGO
+Após salvar, vamos executar o projeto.
+
+Executando o projeto
+Para isso, abrimos mais uma instância do terminal e navegamos até a pasta do micro-frontend do dashboard com o comando cd react-dashboard. Em seguida, executamos npm start, passando a porta como 8501.
+
+npm start -- --port8501
+COPIAR CÓDIGO
+Ótimo, o webpack foi executado, o arquivo foi gerado, e o typecheck passou sem erros. Vamos verificar o projeto no navegador acessando o localhost na porta 9000.
+
+Ao acessar, veremos a mensagem inicial. Para manter a nossa tradição, dentro do react-dashboard, no arquivo root.component.tsx, vamos incluir um "Hello World!".
+
+export default function Root(props) {
+    return <section>Hello World!</section>;
+}
+COPIAR CÓDIGO
+Ao atualizar o projeto no navegador, veremos a mensagem "Hello World!". Agora está tudo pronto para começarmos a estilizar nossos cards.
+
+Design dos cards no Figma
+Conferindo no Figma, teremos um card chamado "hero card" que será o card inicial no dashboard, com uma apresentação e uma imagem. Também teremos cards para usuários da família, gasto de água, lâmpadas e consumo de recursos. Por enquanto, não precisamos nos preocupar com outras telas, mas elas terão elementos semelhantes. Vamos criar um componente específico para cada um desses cards no nosso projeto.
+
+Como estamos utilizando Material UI para facilitar a estilização, não precisamos criar um componente de card para servir como contêiner e receber essas informações. Podemos criar um card específico para cada tipo, contendo as informações necessárias, e utilizá-lo conforme a tela. Vamos focar inicialmente na criação desses cards conforme o design do Figma. Vamos voltar ao nosso código e começar.
+
+Criação dos componentes de card
+Dentro da pasta src, já criamos a pasta components no nosso microfrontend react-dashboard. Agora, dentro dessa pasta components, vamos criar três novas pastas: HeroCard, UsersCard, e WaterCard. Em cada uma dessas pastas, vamos criar um arquivo index.tsx.
+
+Instalação das dependências do Material UI
+Antes de começarmos a desenvolver cada um desses cards, precisamos instalar as dependências do Material UI neste projeto. Lembre-se de que cada microfrontend possui suas próprias dependências, mesmo que estejam se comunicando por meio do orquestrador.
+
+Vamos abrir uma nova instância do terminal e navegar até a pasta do react-dashboard.
+
+cd react-dashboard
+COPIAR CÓDIGO
+Agora, vamos voltar à documentação do Material UI. Em "Getting started", vamos clicar na seção de "Installation", copiar o comando de instalação padrão do Emotion e executar no terminal:
+
+npm install @mui/material @emotion/react @emotion/styled
+COPIAR CÓDIGO
+Em seguida, vamos instalar a fonte Roboto, necessária para o Material UI. Para isso, copiamos o comando de instalação da fonte e executamos no terminal:
+
+npm install @fontsource/roboto
+COPIAR CÓDIGO
+Por último, vamos instalar os ícones do Material UI, que também serão necessários. Para isso, copiamos o comando de instalação dos ícones e executamos no terminal:
+
+npm install @mui/icons-material
+COPIAR CÓDIGO
+Além dessas dependências, para este projeto específico, vamos utilizar uma biblioteca interessante para gráficos chamada MUI X. Podemos acessá-la na documentação clicando na seção "Components". Depois, basta descer na barra de rolagem até encontrá-la.
+
+Ao encontrar "MUI X", vamos clicar na seção "Charts" e, depois, em "Getting Started". Feito isso, copiamos o comando de instalação e o executamos no terminal:
+
+npm install @mui/x-charts
+COPIAR CÓDIGO
+Agora, com todas as dependências instaladas, estamos prontos para começar a desenvolver nossos componentes de card.
+
+Criação do HeroCard
+Dentro da documentação do Material UI, no menu lateral esquerdo, vamos navegar até a seção "Surfaces", dentro de "Components", e clicar em "Card". Nela, encontraremos a seção "Basics", da qual copiaremos as duas linhas de importação mostradas:
+
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+COPIAR CÓDIGO
+Agora, vamos adicionar essas linhas ao index.tsx de cada um dos componentes, começando com o HeroCard, onde também criaremos uma função:
+
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+
+const HeroCard = () => {
+    return (
+        <Card sx={{ background: '#F5F5F5' }}>
+            <CardContent>
+                <h2>Hero Card</h2>
+            </CardContent>
+        </Card>
+    );
+};
+export default HeroCard;
+COPIAR CÓDIGO
+Criação do UsersCard e WaterCard
+Agora, faremos o mesmo para os outros dois componentes, UsersCard e WaterCard, lembrando de alterar os nomes conforme necessário:
+
+UsersCard:
+
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+
+const UsersCard = () => {
+    return (
+        <Card>
+            <CardContent>
+                <h2>Users Card</h2>
+            </CardContent>
+        </Card>
+    );
+};
+export default UsersCard;
+COPIAR CÓDIGO
+WaterCard:
+
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+
+const WaterCard = () => {
+    return (
+        <Card>
+            <CardContent>
+                <h2>Water Card</h2>
+            </CardContent>
+        </Card>
+    );
+};
+export default WaterCard;
+COPIAR CÓDIGO
+Integração dos componentes de card
+Agora que temos o esqueleto básico dos componentes prontos, vamos utilizá-los dentro do nosso root.component. No arquivo root.component.tsx, faremos as seguintes alterações:
+
+Importaremos os componentes HeroCard, UsersCard, e WaterCard manualmente.
+Substituiremos a seção atual por uma div que contenha esses componentes.
+O código deve ficar assim:
+
+import HeroCard from './components/HeroCard';
+import UsersCard from './components/UsersCard';
+import WaterCard from './components/WaterCard';
+
+export default function Root() {
+    return (
+        <div>
+            <HeroCard />
+            <UsersCard />
+            <WaterCard />
+        </div>
+    );
+}
+COPIAR CÓDIGO
+Com isso, o esqueleto inicial da nossa aplicação está pronto e nossos componentes de card estão sendo exibidos corretamente no navegador.
+
+Próximos passos
+Os cards estão sendo exibidos, mas ainda precisam de alguns ajustes. A sombra entre os cards está muito sutil, e precisamos adicionar um fundo de cor, além de aplicar um display flex para seguirem a orientação especificada no Figma.
+
+Nosso plano é que o HeroCard ocupe a parte superior, com um flex 1, enquanto os demais cards serão organizados em um flexbox, alinhados tanto por coluna quanto por fileira.
+
+Na sequência, vamos adicionar os assets necessários ao projeto, incluindo os ícones e o conteúdo de cada card. Além disso, vamos ajustar a aparência dos cards para que fiquem de acordo com o design do dashboard no Figma!
+
+ DISCUTIR NO FÓRUM
+PRÓXIMA ATIVIDADE
+
+
+## Transcrição aula 3
+Transcrição
+Agora que já temos o esqueleto dos nossos cards basicamente pronto, vamos atualizar você, estudante, sobre o que foi feito.
+
+Organização dos recursos
+Criamos uma pasta chamada assets, dentro da qual colocamos os PNGs que vamos utilizar para as lâmpadas, o usuário, a visão geral e o ícone da água. Essa pasta já está incluída no commit da última aula, portanto, ao acessar o código, esses recursos já estarão disponíveis para você.
+
+Para tornar nosso componente de dashboard mais elegante, precisamos fazer alguns ajustes. Atualmente, o conteúdo está todo esticado, sem flexbox ou grid. No Material UI, temos o Box component, que funciona semelhante a uma div do HTML, mas já vem com configurações que facilitam o alinhamento, margens e personalização. Vamos utilizá-lo para envolver toda a nossa dashboard.
+
+Além disso, temos um componente de "Grid" no Material UI, que pode ser acessado pela seção de mesmo nome na documentação. Esse componente permite adaptar cada item, definindo o tamanho do eixo X e do eixo Y, o que facilita bastante o espaçamento e a adição de mais cards ao nosso grid.
+
+Implementação no root.component.tsx
+No arquivo root.component.tsx, vamos deletar as linhas 7 a 11 e substituí-las pelo código que inclui a implementação do Box e do Grid:
+
+import HeroCard from './components/HeroCard';
+import UsersCard from './components/UsersCard';
+import WaterCard from './components/WaterCard';
+
+export default function Root() {
+    return (
+     <Box
+    width={2/3}
+    my={4}
+    display='flex'
+    alignItems='center'
+    gap={4}
+    p={2}
+    sx={{ margin: 'auto' }}
+>
+    <Grid.container spacing={2}>
+        <Grid item xs={12}>
+            <HeroCard />
+        </Grid>
+        <Grid item xs={4}>
+            <UsersCard />
+        </Grid>
+        <Grid item xs={4}>
+            <WaterCard />
+        </Grid>
+    </Grid.container>
+</Box>
+  ); 
+}
+COPIAR CÓDIGO
+Além disso, vamos incluir as importações do Box e do Grid do Material UI para fazer os ajustes necessários.
+
+import { Box, Grid } from '@mui/material'; 
+import HeroCard from './components/HeroCard';
+import UsersCard from './components/UsersCard';
+import WaterCard from './components/WaterCard';
+COPIAR CÓDIGO
+Agora, vamos entender o que faz o nosso código!
+
+Análise do código
+O Box possui dois terços do tamanho total da tela (width={2/3}), com uma margem no eixo Y de 4 unidades relativas (my={4}). Estamos utilizando display='flex' para centralizar os componentes, juntamente com a propriedade alignItems='center' para centralizar os itens na tela. Além disso, definimos um gap de 4 unidades e um padding de 2 unidades, ambos em tamanho relativo à tela.
+
+Para garantir um alinhamento centralizado, utilizamos a propriedade sx, que permite alterar propriedades CSS sem usar a tag style, já que ela não existe no Material UI. Por fim, passamos a margem automática para centralizar o conteúdo (margin: 'auto').
+
+Em seguida, iniciamos o Grid definindo o container com um espaçamento de 2 unidades relativas. O HeroCard ocupará todas as 12 colunas do Grid, preenchendo toda a primeira fileira. O segundo e o terceiro item ocuparão 4 colunas cada um, pois ainda teremos outro card que ocupará as 4 colunas restantes, conforme planejado no Figma.
+
+Com essas configurações, nosso dashboard ficará mais organizado e visualmente agradável, seguindo a estrutura planejada. Agora, vamos salvar este arquivo. Ao fazer isso, note que ele passou pelo type check sem encontrar erros.
+
+Voltando ao navegador, vemos que o design está mais centralizado e espaçado, começando a tomar forma.
+
+Implementando a cor de fundo
+O próximo passo é trocar a cor de fundo dos cards. Para o HeroCard, vamos pegar o código hexadecimal no Figma e aplicá-lo no fundo do card, substituindo o #F5F5F5 pelo código correto, que é #FFF3E0.
+
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+
+const HeroCard = () => {
+    return (
+        <Card sx={{ background: '#FFF3E0' }}>
+            <CardContent>
+                <h2>Hero Card</h2>
+            </CardContent>
+        </Card>
+    );
+};
+export default HeroCard;
+COPIAR CÓDIGO
+Agora, ao salvar e voltar no navegador, vemos que o HeroCard já está na cor correta, conforme o Figma.
+
+Em seguida, aplicaremos a mesma cor de fundo no UsersCard e WaterCard, garantindo que todos os cards estejam consistentes com o design do Figma.
+
+UsersCard:
+
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+
+const UsersCard = () => {
+    return (
+        <Card sx={{ background: '#FFF3E0' }}>
+            <CardContent>
+                <h2>Users Card</h2>
+            </CardContent>
+        </Card>
+    );
+};
+export default UsersCard;
+COPIAR CÓDIGO
+WaterCard:
+
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+
+const WaterCard = () => {
+    return (
+        <Card sx={{ background: '#FFF3E0' }}>
+            <CardContent>
+                <h2>Water Card</h2>
+            </CardContent>
+        </Card>
+    );
+};
+export default WaterCard;
+COPIAR CÓDIGO
+Com os fundos dos cards ajustados, vamos adicionar conteúdo a eles!
+
+Estilizando o HeroCard
+O HeroCard terá duas tipografias e uma imagem alinhada à direita. Vamos criar um componente de tipografia (Typography) e adicionar um texto "Olá, usuário!". Além disso, precisamos importar essa tag no início do código.
+
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import { Typography } from '@mui/material';
+
+const HeroCard = () => {
+    return (
+        <Card sx={{ background: '#FFF3E0' }}>
+            <CardContent>
+                <Typography>Olá, usuário!</Typography>
+            </CardContent>
+        </Card>
+    );
+};
+export default HeroCard;
+COPIAR CÓDIGO
+Salvando essas alterações e verificando no navegador, podemos ver que o HeroCard agora exibe o texto corretamente. Às vezes, ao salvar um arquivo, podemos perceber uma leve instabilidade na apresentação da nossa dashboard. Isso é normal em ambiente de desenvolvimento, especialmente quando fazemos alterações frequentes. Para evitar distrações durante nosso desenvolvimento, vamos parar a execução do projeto da Navbar para nos concentrarmos apenas na dashboard.
+
+Agora, vamos incluir o texto que está logo abaixo: "Confira as informações de sua casa inteligente!". Vamos copiá-lo do Figma e colar na linha seguinte, também em uma tipografia.
+
+const HeroCard = () => {
+    return (
+        <Card sx={{ background: '#FFF3E0' }}>
+            <CardContent>
+                <Typography>Olá, usuário!</Typography>
+                <Typography>Confira as informações de sua casa inteligente!</Typography>
+            </CardContent>
+        </Card>
+    );
+};
+export default HeroCard;
+COPIAR CÓDIGO
+A fonte e a cor ainda precisam de ajustes, bem como o espaçamento, mas já estamos começando a ver o formato desejado do card.
+
+Em seguida, vamos importar a imagem que será usada no HeroCard. Nomeamos essa imagem como VisaoGeral, então vamos importá-la da pasta assets. Lembre-se de que a imagem está localizada dentro da pasta components, por isso, é necessário voltar duas pastas.
+
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import { Typography } from '@mui/material';
+import VisaoGeral from '../../assets/visao-geral.png';
+COPIAR CÓDIGO
+Feita a importação, vamos adicionar a tag de imagem, passando VisaoGeral e um texto alternativo para manter a padronização.
+
+const HeroCard = () => {
+    return (
+        <Card sx={{ background: '#FFF3E0' }}>
+            <CardContent>
+                <Typography>Olá, usuário!</Typography>
+                <Typography>Confira as informações de sua casa inteligente!</Typography>
+                <img src={VisaoGeral} alt='Visão Geral' />
+            </CardContent>
+        </Card>
+    );
+};
+export default HeroCard;
+COPIAR CÓDIGO
+Ao salvar e voltar ao navegador, percebemos que a imagem está muito grande. A imagem tem 468 pixels de largura e 264 pixels de altura. Vamos ajustar apenas a altura para 180 pixels.
+
+const HeroCard = () => {
+    return (
+        <Card sx={{ background: '#FFF3E0' }}>
+            <CardContent>
+                <Typography>Olá, usuário!</Typography>
+                <Typography>Confira as informações de sua casa inteligente!</Typography>
+                <img src={VisaoGeral} alt='Visão Geral' height={180}/>
+            </CardContent>
+        </Card>
+    );
+};
+export default HeroCard;
+COPIAR CÓDIGO
+Ao salvar e verificar no navegador, vemos que a imagem está com um tamanho adequado.
+
+Para finalizar, vamos adicionar o Box, do Material UI, para organizar melhor os elementos. O Box vai funcionar como uma div, então vamos criar um Box para todo o conteúdo e um Box específico para o conteúdo de texto.
+
+const HeroCard = () => {
+    return (
+        <Card sx={{ background: '#FFF3E0' }}>
+            <CardContent>
+                <Box>
+                    <Box>
+                        <Typography>Olá, usuário!</Typography>
+                        <Typography>Confira as informações de sua casa inteligente!</Typography>
+                    </Box>
+                    <img src={VisaoGeral} alt='Visão Geral' height={180} />
+                </Box>
+            </CardContent>
+        </Card>
+    );
+};
+
+export default HeroCard;
+COPIAR CÓDIGO
+Para o Box externo, que engloba tudo, definiremos um display={'flex'} e flexDirection={'row'} para alinhar os itens horizontalmente.
+
+const HeroCard = () => {
+    return (
+        <Card sx={{ background: '#FFF3E0' }}>
+            <CardContent>
+                <Box display={'flex'} flexDirection={'row'}>
+                    <Box>
+                        <Typography>Olá, usuário!</Typography>
+                        <Typography>Confira as informações de sua casa inteligente!</Typography>
+                    </Box>
+                    <img src={VisaoGeral} alt='Visão Geral' height={180} />
+                </Box>
+            </CardContent>
+        </Card>
+    );
+};
+
+export default HeroCard;
+COPIAR CÓDIGO
+Agora, precisamos alinhar o texto. Para isso, aplicaremos um alignItems={'center} para centralizar verticalmente e justifyContent={'center'} para centralizar horizontalmente.
+
+const HeroCard = () => {
+    return (
+        <Card sx={{ background: '#FFF3E0' }}>
+            <CardContent>
+                <Box display={'flex'} flexDirection={'row'} alignItems={'center} justifyContent={'center'}>
+                    <Box>
+                        <Typography>Olá, usuário!</Typography>
+                        <Typography>Confira as informações de sua casa inteligente!</Typography>
+                    </Box>
+                    <img src={VisaoGeral} alt='Visão Geral' height={180} />
+                </Box>
+            </CardContent>
+        </Card>
+    );
+};
+
+export default HeroCard;
+COPIAR CÓDIGO
+Ainda precisamos ajustar a fonte e outros detalhes, mas nossos cards já estão começando a tomar forma.
+
+Próximos passos
+No próximo vídeo, vamos finalizar a estilização deste card e deixar um desafio para você: replicar esses ajustes nos cards de Users e Water. Até já!
+
+## Transcrição aula 4
+Transcrição
+Vamos começar o desenvolvimento dos últimos dois cards para concluirmos e juntarmos os dois micro front-ends novamente.
+
+Dentro da documentação do Material UI, exploramos os componentes de gráficos e instalamos o MUIX para viabilizar o uso de gráficos de barra, pizza, linha, entre outros tipos.
+
+Decidimos empregar o gráfico de pizza para integrá-lo ao nosso card de água, exibindo informações sobre o consumo desse recurso.
+
+Para realizar isso, vamos acessar "Pie Overview" dentro da seção de "Charts" (gráficos) e copiar o código do gráfico de pizza que está listado como Basics.
+
+Trecho de código retirado da documentação:
+
+<PieChart
+  series={[
+    {
+      data: [
+        { id: 0, value: 10, label: 'series A' },
+        { id: 1, value: 15, label: 'series B' },
+        { id: 2, value: 20, label: 'series C' },
+      ],
+    },
+  ]}
+  width={400}
+  height={200}
+/>
+COPIAR CÓDIGO
+Dentro do nosso Water Card no arquivo index.tsx, colamos esse trecho de código logo abaixo da tipografia.
+
+index.tsx
+
+// código omitido
+
+    <CardContent>
+        <Typography>Water Card</Typography>
+        <PieChart
+    series={[
+    {
+            data: [
+                { id: 0, value: 10, label: 'series A' },
+                { id: 1, value: 15, label: 'series B' },
+                { id: 2, value: 20, label: 'series C' },
+            ],
+        },
+    ]}
+    width={400}
+    height={200}
+    />
+        </CardContent>
+            
+// código omitido
+COPIAR CÓDIGO
+Faremos a importação do PieChart, que está destacado com um sublinhado vermelho. É importante lembrar de realizar essa importação do "@mui/x-charts", que é a segunda opção disponível. Após importarmos o PieChart, vamos proceder com a troca dos valores. Na primeira posição, atribuímos 'Chuveiros' à linha 15, seguido por 'Piscina' e repetindo 'Lava e Seca'.
+
+index.tsx
+
+// código omitido
+
+<PieChart
+    series={[
+        {
+            data: [
+                { id: 0, value: 10, label: 'Chuveiros' },
+                { id: 1, value: 15, label: 'Piscina' },
+                { id: 2, value: 20, label: 'Lava e seca' },
+            ],
+        },
+    ]}
+    width={400}
+    height={200}
+/>
+            
+// código omitido
+COPIAR CÓDIGO
+Ajustando Dimensões e Estilo do Water Card
+Ao salvar e retornar à nossa aplicação no endereço localhost:9000, já podemos observar a presença do "WaterCard". No entanto, é necessário ajustar o espaçamento desse card na aplicação. Precisamos corrigir a largura (width) para 300 e a altura (height) para 150, dentro do próprio WaterCard.
+
+// código omitido
+
+<PieChart
+    series={[
+        {
+            data: [
+                { id: 0, value: 10, label: 'Chuveiros' },
+                { id: 1, value: 15, label: 'Piscina' },
+                { id: 2, value: 20, label: 'Lava e seca' },
+            ],
+        },
+    ]}
+    width={300}
+    height={150}
+/>
+            
+// código omitido
+COPIAR CÓDIGO
+Devemos verificar se essas dimensões proporcionam uma aparência adequada.
+
+Ao analisar mais detalhadamente no arquivo root.component.tsx, percebemos que o card está ocupando um espaço equivalente a 4, 4, 3 quartos. Talvez um valor de 350 no width seja mais adequado. Vamos experimentar com essa largura para verificar como fica. No entanto, após testar, notamos que 350 é excessivo. Optamos por manter a largura em 300, pois ainda há ajustes a serem feitos em relação à tipografia.
+
+Precisamos importar a imagem que será utilizada dentro desse componente.
+
+Importando a imagem do componente
+Faremos o import da seguinte forma: 'WaterIcon from '../../assets/' seguido de '/water.png'.
+
+index.tsx
+
+// código omitido
+
+import WaterIcon from '../../assets/water.png';
+
+// código omitido
+COPIAR CÓDIGO
+Agora, adicionaremos uma tag de imagem chamada Water Icon após o CardContent e ajustaremos o tamanho para 50 para verificar se fica adequado. Caso contrário, podemos alterá-lo para 60, mas acredito que 50 seja o tamanho ideal.
+
+index.tsx
+
+// código omitido
+
+<img src={WaterIcon} alt='Water Icon' style={{ width: 50, height: 50 }} />
+
+// código omitido
+COPIAR CÓDIGO
+Em seguida, adicionamos um box para centralizar esse conteúdo na tela. Usamos o box do Material UI e colocamos logo abaixo, antes do nosso CardContent.
+
+index.tsx
+
+// código omitido
+
+<Card sx={{ background: '#F5F5F5' }}>
+    <CardContent>
+        <Box>
+                
+// código omitido
+
+        </Box>
+    </CardContent>
+
+// código omitido
+COPIAR CÓDIGO
+Agora, dentro da tag Box, vamos aplicar as propriedades de display={'flex'}, flexDirection={'column'} e alignItems={'center'} para ajustar a disposição dos elementos na tela.
+
+// código omitido
+
+<Box display={'flex'} flexDirection={'column'} alignItems={'center'}>
+
+// código omitido
+COPIAR CÓDIGO
+Vamos verificar como fica após essas modificações voltando à aplicação.
+
+Vamos ajustar a cor da fonte.
+
+Ajustando a cor da fonte
+Primeiro, verificamos o código hexadecimal da cor dentro do nosso HomeHub. No Figma, selecionamos "Gasto de Água", e utilizamos o código hexadecimal para fazer a alteração na tipografia. Assim, basta copiarmos o código da cor e aplicá-la em color dentro da tag typography.
+
+// código omitido
+
+<Typography color={'#E65100'}>Water Card</Typography>
+
+// código omitido
+COPIAR CÓDIGO
+Parece que o design está melhor, mas o componente ainda está um pouco grande. Vamos tentar reduzir para 250 no width e verificar como fica. Ainda não está ideal, talvez 200 seja melhor. No entanto, ao reduzir, o componente ficou muito centralizado.
+
+Removemos o box do PieChart e verificamos o resultado. Para isso, passamos o fechamento da tag box para a linha acima da abertura de tag do PieChart.
+
+Precisamos encontrar um meio-termo. Vamos comentar a altura (height) para não interferir no componente. Agora, ao verificarmos na aplicação, notamos que o componente sumiu.
+
+Voltamos ao código e inserimos o valor 180 em height.
+
+Encontrar o tamanho ideal para o componente requer experimentação. Vamos aumentar para 300 e verificar. Talvez 280 seja melhor. Estamos nos aproximando do tamanho ideal. Continuemos tentando até acertar. O tamanho atual de 280 é um pouco pequeno. Vamos tentar 400. Parece que 350 pode ser um bom tamanho para o componente aqui.
+
+Estamos chegando perto, vamos tentar 320. Agora, reduzimos o height para 120 e continuamos com o processo de tentativa e erro. Estamos nos aproximando do tamanho ideal. Se aumentarmos para 300, talvez cheguemos ao valor certo.
+
+// código omitido
+
+<PieChart
+    series={[
+        {
+            data: [
+                { id: 0, value: 10, label: 'Chuveiros' },
+                { id: 1, value: 15, label: 'Piscina' },
+                { id: 2, value: 20, label: 'Lava e seca' },
+            ],
+        },
+    ]}
+    width={300}
+    height={120}
+/>
+            
+// código omitido
+COPIAR CÓDIGO
+Agora está com um tamanho adequado, podemos até adicionar uma margem. Ante do width, adicionamos um sx={} e passamos uma margem, só para termos um respiro referente ao texto que está em cima. Então, passar uma marginTop de 2.
+
+// código omitido
+
+sx={{ marginTop: 2 }}
+width={300}
+height={100}
+            
+// código omitido
+COPIAR CÓDIGO
+Nosso WaterCard ficou bem interessante, todas as informações estão visíveis e claras. Agora, ele está pronto para uso. Vamos aplicar um código semelhante no index do UsersCard.
+
+Desenvolvimento do UsersCard
+Para isso, já temos um código previamente copiado, o que facilitará nosso desenvolvimento deste novo componente. Vamos revisar o que cada parte desse código faz. Colamos o código no arquivo index para analisarmos juntos.
+
+index.tsx
+
+import { Box, Divider, Typography } from '@mui/material';
+
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import UsersIcons from '../../assets/users.png';
+
+const UsersCard = () => {
+    return (
+        <Card sx={{ background: '#F5F5F5' }}>
+            <CardContent>
+                <Box display={'flex'} alignItems={'center'} flexDirection={'column'}>
+                    <img src={UsersIcons} alt='water icon' width={60} />
+                    <Typography color={'#E65100'}>Usuários da família</Typography>
+                </Box>
+                <Box display={'flex'} alignItems={'center'} justifyContent={'start'} sx={{ marginTop: 2 }}>
+                    <AccountCircleIcon sx={{ color: '#BDBDBD', width: 60 }} />
+                    <Typography variant='body2'>Usuário 1</Typography>
+                </Box>
+                <Divider sx={{ color: '#000000' }} style={{ marginTop: 8 }} />
+                <Box display={'flex'} alignItems={'center'} justifyContent={'start'} sx={{ marginTop: 1 }}>
+                    <AccountCircleIcon sx={{ color: '#BDBDBD', width: 60 }} />
+                    <Typography variant='body2'>Usuário 2</Typography>
+                </Box>
+                <Divider sx={{ color: '#000000' }} style={{ marginTop: 8 }} />
+                <Box display={'flex'} alignItems={'center'} justifyContent={'start'} sx={{ marginTop: 1 }}>
+                    <AccountCircleIcon sx={{ color: '#BDBDBD', width: 60 }} />
+                    <Typography variant='body2'>Usuário 3</Typography>
+                </Box>
+            </CardContent>
+        </Card>
+    );
+};
+export default UsersCard;
+COPIAR CÓDIGO
+Basicamente, do código da linha 16 até a linha 29, temos um código duplicado. Criamos um box, definimos seu comportamento como flex e centralizamos o conteúdo. Adicionamos ícones e texto.
+
+A única diferença notável está na linha 13 (<img src={UsersIcons} alt='water icon' width={60}), onde substituímos o ícone do Material UI por uma imagem de usuários da família, conforme indicado no Figma.
+
+Agora, vamos salvar esse componente. Todas as importações necessárias já estão incluídas no código que temos salvo, então não precisamos nos preocupar com isso.
+
+Ao revisarmos nosso projeto, observamos que o card de usuários da família já está pronto, incluindo os usuários 1, 2 e 3. Notamos uma pequena diferença no tamanho e vamos aumentar a altura do index do WaterCard para 131.
+
+Index
+
+// código omitido
+
+sx={{ marginTop: 2 }}
+width={300}
+height={131}
+            
+// código omitido
+COPIAR CÓDIGO
+Agora, sim, o espaçamento dos cards estão alinhados.
+
+No lado esquerdo, encontramos um card denominado "Usuários da família" com uma lista de: Usuário 1, Usuário 2 e Usuário 3. Ao lado direito desse card, está outro chamado "Water Card", exibindo um gráfico de pizza dividido em categorias como Chuveiros, Piscina e Lava e Seca. Na parte superior, há o título "Olá, usuário!" com o texto "Confira as informações da sua casa inteligente!" com um ícone à direita de uma pessoa analisando dados.
+
+Vamos seguir este plano: primeiro, vamos rodar nosso outro micro front-end, que é o NavBar. Para isso, abrimos uma nova instância do terminal e acessamos a página do React NavBar.
+
+cd ..
+cd react-navbar/
+COPIAR CÓDIGO
+Em seguida, executamos o comando npm start com a porta 8500 especificada.
+
+npm start -- --port8500
+COPIAR CÓDIGO
+O Webpack terminou de rodar e gerou o fallback. Verificamos se tudo estava funcionando corretamente.
+
+Foi concluído sem erros. Atualizamos a página da aplicação e notamos um problema de posicionamento devido ao refresh. No entanto, assim que a página foi atualizada no navegador, conseguimos visualizar o projeto em execução com os dois micro front-ends.
+
+Conclusão e Próximos Passos
+Temos o micro front-end individual da nossa NavBar, onde temos esse menu do tipo Drawer do lado esquerdo ao selecionarmos "HomeHub". Temos também esse menu lateral direito para as configurações de usuário. Por enquanto, um ícone de notificações que não fizemos a implementação.
+
+No projeto, temos a dashboard como um micro front-end separado, onde exibimos as informações. Implementamos dois micro front-ends distintos, cada um com suas próprias características e dependências. A harmonia entre eles é mantida pelo orquestrador.
+
+Esses são os aspectos que exploramos neste vídeo. No próximo, vamos concluir nossa jornada de aprendizado sobre micro front-ends neste projeto. Até lá!
+
+## aula 5
+Nesta aula, foi feita uma alteração no arquivo "index.ejs" para adicionar um novo endereço de importação para o módulo "@home-hub/react-dashboard".
+
+Foram feitas alterações em vários arquivos para personalizar a aparência de cards em um dashboard React. No arquivo "HeroCard/index.tsx", a cor de fundo do card foi alterada, e foi adicionado um texto de boas-vindas e uma imagem. Já nos arquivos "UsersCard/index.tsx" e "WaterCard/index.tsx", foi adicionado um componente Typography com o título do card. Por fim, no arquivo "root.component.tsx", os cards foram organizados em uma grade com tamanhos diferentes.
+
+E por fim, foram feitas alterações nos arquivos UsersCard e WaterCard de um projeto React. No UsersCard, foi adicionada a importação do ícone AccountCircleIcon, a imagem UsersIcons, e foram feitas modificações no layout para exibir informações de usuários da família. Já no WaterCard, foi importado o ícone WaterIcon e o componente PieChart para exibir um gráfico de pizza com dados relacionados ao consumo de água.
+
+Agora implemente dentro do código as instruções acima, conforme estudamos nos videos dessa aula.
+
+Opinião do instrutor
+
+É importante testar essa implementação em outros projetos e deixar a estilização personalizada de acordo com o seu gosto.
+
+Para a implementação, conforme feito nos videos, o passo a passo é:
+
+arquivo "index.ejs":
+
+Abra o arquivo "index.ejs" no diretório "root/src".
+Localize a seção "imports" dentro do objeto JSON.
+Adicione uma vírgula após o endereço do módulo "@home-hub/react-navbar".
+Insira uma nova linha com o endereço do módulo "@home-hub/react-dashboard" seguido por ": "//localhost:8501/home-hub-react-dashboard.js"".
+Salve as alterações feitas no arquivo "index.ejs".
+arquivo: "HeroCard/index.tsx"
+
+Importe os componentes Box e Typography do '@mui/material';
+Substitua a cor de fundo do Card para '#FFF3E0';
+Adicione um Box com propriedades de layout flexível;
+Dentro do Box, adicione um Typography com o texto de boas-vindas;
+Adicione outro Typography com informações adicionais;
+Insira a imagem 'VisaoGeral' com um tamanho específico.
+arquivo: "UsersCard/index.tsx"
+
+Importe o componente Typography do '@mui/material';
+Adicione um Typography com o título do card.
+arquivo: "WaterCard/index.tsx"
+
+Importe o componente Typography do '@mui/material';
+Adicione um Typography com o título do card.
+arquivo: "root.component.tsx"
+
+Importe os componentes Box e Grid do '@mui/material';
+Substitua a estrutura de div por um Box com propriedades de layout;
+Defina a largura, margem, alinhamento e espaçamento do Box;
+Crie um Grid container com espaçamento entre os itens;
+Adicione os componentes HeroCard, UsersCard e WaterCard dentro de Grid items com tamanhos diferentes.
+arquivo: UsersCard
+
+Importe os componentes Box, Divider, Typography e o ícone AccountCircleIcon.
+Substitua a importação de UsersIcons por import UsersIcons from '../../assets/users.png';.
+Dentro do componente UsersCard, adicione um Box com as propriedades display={'flex'}, alignItems={'center'} e flexDirection={'column'}.
+Adicione a tag <img> com a imagem UsersIcons, um Typography com a cor #E65100 e o texto "Usuários da família".
+Crie três blocos de informações de usuário, cada um contendo um AccountCircleIcon e um Typography com o texto "Usuário X".
+Adicione divisores entre os blocos de informações.
+arquivo: WaterCard
+
+Importe os componentes Box e Typography, e o componente PieChart do pacote @mui/x-charts.
+Substitua a importação de WaterIcon por import WaterIcon from '../../assets/water.png';.
+Dentro do componente WaterCard, adicione um Box com as propriedades display={'flex'} e flexDirection={'column'}.
+Insira a tag <img> com a imagem WaterIcon, um Typography com a cor #E65100 e o texto "Water Card".
+Adicione o componente PieChart com os dados e estilos desejados.
+
+
+## aula 6
+Descrição do Problema:
+Na dashboard HomeHub, você está encarregado de adicionar um novo componente que exibe informações sobre o consumo de energia na casa inteligente. Este componente deve mostrar o total de energia consumida no mês atual e compará-lo com o mês anterior, incentivando a economia de energia. O componente deve ser visualmente atraente e fornecer informações claras e concisas para o usuário.
+
+Código para o Novo Componente:
+import { Box, Typography, Paper } from '@mui/material';
+import EnergyIcon from '@mui/icons-material/FlashOn';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+
+const EnergyCard = ({ currentMonthUsage, lastMonthUsage }) => {
+  const usageDifference = currentMonthUsage - lastMonthUsage;
+  const isIncreased = usageDifference > 0;
+
+  return (
+    <Paper elevation={3} sx={{ padding: 2, margin: 2, backgroundColor: '#E3F2FD' }}>
+      <Box display="flex" alignItems="center" justifyContent="space-between">
+        <EnergyIcon sx={{ color: '#1E88E5', fontSize: 40 }} />
+        <Typography variant="h6" color="textSecondary">
+          Consumo de Energia
+        </Typography>
+      </Box>
+      <Typography variant="h4" sx={{ textAlign: 'center', my: 2 }}>
+        {currentMonthUsage} kWh
+      </Typography>
+      <Box display="flex" alignItems="center" justifyContent="center">
+        {isIncreased ? (
+          <ArrowUpwardIcon color="error" />
+        ) : (
+          <ArrowDownwardIcon color="success" />
+        )}
+        <Typography color={isIncreased ? 'error' : 'success'}>
+          {Math.abs(usageDifference)} kWh {isIncreased ? 'mais' : 'menos'} que o mês passado
+        </Typography>
+      </Box>
+    </Paper>
+  );
+};
+
+export default EnergyCard;
+
+
+
+O código acima define um componente EnergyCard que aceita duas props: currentMonthUsage e lastMonthUsage, representando o consumo de energia no mês atual e no mês anterior, respectivamente. O componente utiliza o Material UI para estilização, exibindo o ícone de energia, o consumo atual em kWh e a diferença de consumo em relação ao mês anterior. A diferença é destacada com um ícone de seta para cima ou para baixo, indicando aumento ou diminuição do consumo, e a cor do texto muda de acordo com essa condição (vermelho para aumento, verde para diminuição). Este componente fornece uma maneira visual e intuitiva de apresentar informações sobre o consumo de energia, incentivando a conscientização e a economia de energia.
+
+## Transcrição aula Para saber mais: testando micro-frontends - estratégias e ferramentas
+PRÓXIMA ATIVIDADE
+
+Quando você começa a aprender sobre desenvolvimento de aplicações web, logo percebe que a complexidade pode crescer rapidamente. Uma forma de gerenciar essa complexidade é dividir a aplicação em partes menores e mais gerenciáveis, conhecidas como micro-frontends. Mas, como garantir que cada parte funciona bem tanto isoladamente quanto em conjunto? Aqui entra a importância dos testes.
+
+Por que Testar Micro-Frontends?
+Testar micro-frontends é crucial por várias razões:
+
+Isolamento: Garante que cada componente funciona corretamente por conta própria.
+Integração: Verifica se os componentes interagem bem entre si e com o backend.
+Qualidade: Ajuda a manter a qualidade do código e da experiência do usuário.
+Estabilidade: Previne bugs e problemas quando novas funcionalidades são adicionadas ou quando existem atualizações.
+Estratégias de Teste
+Testes Unitários
+Os testes unitários focam em verificar a menor parte do código, como funções ou componentes, de forma isolada. Eles são rápidos e ajudam a identificar erros básicos no código.
+
+Exemplo:
+
+Imagine que você tem um componente que mostra uma lista de produtos. Um teste unitário poderia verificar se, ao fornecer uma lista de produtos ao componente, cada produto é mostrado corretamente.
+
+describe('Lista de Produtos', () => {
+  it('deve mostrar cada produto fornecido', () => {
+    const produtos = [{ id: 1, nome: 'Produto 1' }, { id: 2, nome: 'Produto 2' }];
+    const componente = renderizarListaDeProdutos(produtos);
+    expect(componente).toContain('Produto 1');
+    expect(componente).toContain('Produto 2');
+  });
+});
+COPIAR CÓDIGO
+Testes de Integração
+Enquanto os testes unitários verificam partes isoladas, os testes de integração garantem que diferentes partes do sistema (como micro-frontends) trabalhem bem juntas.
+
+Exemplo:
+
+Se um micro-frontend é responsável pela autenticação do usuário e outro pela exibição de conteúdo exclusivo, um teste de integração poderia verificar se, após o login bem-sucedido, o conteúdo exclusivo é de fato acessível.
+
+Testes E2E (End-to-End)
+Os testes E2E simulam o comportamento do usuário final, percorrendo a aplicação de ponta a ponta. Eles são úteis para garantir que o fluxo geral da aplicação esteja funcionando como esperado.
+
+Exemplo:
+
+Um teste E2E em uma aplicação de compras poderia simular o processo de adicionar um produto ao carrinho, realizar o checkout e verificar se a compra foi concluída com sucesso.
+
+Ferramentas de Teste
+Existem várias ferramentas disponíveis para ajudar nos testes de micro-frontends, como:
+
+Jest: Popular para testes unitários e de integração.
+Cypress: Excelente para testes E2E.
+Storybook: Útil para documentar e testar componentes de UI isoladamente.
+Conclusão
+Testar micro-frontends é uma parte essencial do desenvolvimento de aplicações web modernas. Ao adotar estratégias de teste como testes unitários, de integração e E2E, e utilizando ferramentas adequadas, você pode garantir que cada componente e a aplicação como um todo funcionem corretamente, proporcionando uma experiência de qualidade para o usuário. Lembre-se, a prática leva à perfeição, então continue testando e aprimorando suas habilidades de teste!
 ## Transcrição aula
-## Transcrição aula
-## Transcrição aula
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
